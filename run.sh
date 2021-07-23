@@ -1,4 +1,5 @@
 #!/bin/bash
+git reset --hard origin/master
 git pull origin master
 docker build -t techniques .
 docker rm -f techniques-container || true
