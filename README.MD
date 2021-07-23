@@ -10,4 +10,3 @@
  - Check that app is running. Open in browser localhost with selected port `http://localhost:8787/` <br/>
 
  - Kill Container `docker kill <container ID>` <br/> Check container ID `docker ps`
-
