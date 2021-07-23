@@ -9,7 +9,7 @@ import (
 
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-       fmt.Fprintf(w, "Here you will see judo techniques, %q", html.EscapeString(r.URL.Path))
+       fmt.Fprintf(w, "Please work! Here you will see judo techniques, %q", html.EscapeString(r.URL.Path))
     })
 
     http.HandleFunc("/list", func(w http.ResponseWriter, r *http.Request){
