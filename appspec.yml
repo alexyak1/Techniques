@@ -4,6 +4,10 @@ files:
   - source: .
     destination: /project/Techniques
 hooks:
+  BeforeInstall:
+    - location: clone_repo.sh
+      timeout: 300
+      runas: root
   ApplicationStart:
    - location: run.sh
      timeout: 300
