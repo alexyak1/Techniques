@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: .
-    destination: /home/ubuntu/projects/Techniques
+    destination: /projects/Techniques
 hooks:
   AfterInstall:
    - location: setup.sh
