@@ -1,6 +1,13 @@
 ## Back End for Judo Techniques
 
 ### How to run
+
+#### Preparation
+- Install make `brew install make` for Mac. And `sudo apt-get install build-essential` for ubuntu.
+- export DOCKER_BUILDKIT=1
+- install autoconf
+
+#### Instalation
  - Clone repo `git clone https://github.com/alexyak1/Techniques.git`
  - Build the Docker image `docker build -t techniques .` <br/>
  check that image created `docker images`. Should *techniques* exist
