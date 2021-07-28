@@ -14,9 +14,7 @@ RUN apk add --no-cache git
 COPY go.mod ./
 COPY go.sum ./
 RUN go get -u github.com/gorilla/mux
-
 RUN go mod download
-
 
 ## Run go build to compile the binary
 RUN go build  -o main .

@@ -29,7 +29,7 @@ func returnAllTechnique(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(Techniques)
 }
 
-func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
+func returnSingleTechnique(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     key := vars["id"]
 
@@ -41,23 +41,23 @@ func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func createNewArticle(w http.ResponseWriter, r *http.Request) {
+func createNewTechnique(w http.ResponseWriter, r *http.Request) {
     reqBody, _ := ioutil.ReadAll(r.Body)
     var technique Technique
     json.Unmarshal(reqBody, &technique)
-    // update our global Articles array to include
-    // our new Article
+
+    // fake update
     Techniques = append(Techniques, technique)
 
     json.NewEncoder(w).Encode(technique)
 }
 
-func deleteArticle(w http.ResponseWriter, r *http.Request) {
+func deleteTechnique(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     id := vars["id"]
 
-    for index, article := range Techniques {
-        if article.Id == id {
+    for index, technique := range Techniques {
+        if technique.Id == id {
             Techniques = append(Techniques[:index], Techniques[index+1:]...)
         }
     }
@@ -68,9 +68,9 @@ func handleRequests() {
     myRouter := mux.NewRouter().StrictSlash(true)
     myRouter.HandleFunc("/", homePage)
     myRouter.HandleFunc("/techniques", returnAllTechnique)
-    myRouter.HandleFunc("/technique", createNewArticle).Methods("POST")
-    myRouter.HandleFunc("/technique/{id}", deleteArticle).Methods("DELETE")
-    myRouter.HandleFunc("/technique/{id}", returnSingleArticle)
+    myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
+    myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
+    myRouter.HandleFunc("/technique/{id}", returnSingleTechnique)
     log.Fatal(http.ListenAndServe(":8787", myRouter))
 }
 

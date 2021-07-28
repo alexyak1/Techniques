@@ -11,3 +11,18 @@
 
  - Kill Container `docker kill <container ID>` <br/> Check container ID `docker ps`
  - Remove container `docker rm -f techniques-container`
+
+ ### Functionality
+ if you run locally come to `localhost:8787/`
+
+ - Get all techniques: GET `localhost:8787/techniques`
+ - Get technique by id: GET `localhost:8787/technique{id}`
+ - Add new technique: POST `localhost:8787/technique` with body example:
+ ```json
+ {
+    "Id": "4",
+    "name": "Newly Created Post",
+    "belt": "yellow"
+}
+```
+ - Dlete technique: DELETE `localhost:8787/technique/{id}`
