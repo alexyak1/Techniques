@@ -7,9 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -81,25 +79,25 @@ func handleRequests() {
 func main() {
 
         // Capture connection properties.
-        cfg := mysql.Config{
-            User:   os.Getenv("root"),
-            Passwd: os.Getenv("judo-test-password"),
-            Net:    "tcp",
-            Addr:   "127.0.0.1:3306",
-            DBName: "techniques",
-        }
-        // Get a database handle.
-        var err error
-        db, err = sql.Open("mysql", cfg.FormatDSN())
-        if err != nil {
-            log.Fatal(err)
-        }
+        // cfg := mysql.Config{
+        //     User:   os.Getenv("root"),
+        //     Passwd: os.Getenv("judo-test-password"),
+        //     Net:    "tcp",
+        //     Addr:   "127.0.0.1:3306",
+        //     DBName: "techniques",
+        // }
+        // // Get a database handle.
+        // var err error
+        // db, err = sql.Open("mysql", cfg.FormatDSN())
+        // if err != nil {
+        //     log.Fatal(err)
+        // }
 
-        pingErr := db.Ping()
-        if pingErr != nil {
-            log.Fatal(pingErr)
-        }
-        fmt.Println("Connected!")
+        // pingErr := db.Ping()
+        // if pingErr != nil {
+        //     log.Fatal(pingErr)
+        // }
+        // fmt.Println("Connected!")
     Techniques = []Technique{
         Technique{Id: "1", Name: "O-soto-otoshi", Belt: "yellow"},
         Technique{Id: "2", Name: "O-goshi", Belt: "yellow"},
