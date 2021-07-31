@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	// _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
