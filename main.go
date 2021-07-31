@@ -1,18 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
-var db *sql.DB
-// Article - Our struct for all articles
 type Technique struct {
     Id      string    `json:"Id"`
     Name   string `json:"name"`
@@ -73,31 +71,36 @@ func handleRequests() {
     myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
     myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
     myRouter.HandleFunc("/technique/{id}", returnSingleTechnique)
-    log.Fatal(http.ListenAndServe(":8787", myRouter))
+    log.Fatal(http.ListenAndServe(":8788", myRouter))
 }
 
 func main() {
+    // db, err := sql.Open("mysql", "root:judo-test-password@tcp(0.0.0.1:3306)/techniques")
 
-        // Capture connection properties.
-        // cfg := mysql.Config{
-        //     User:   os.Getenv("root"),
-        //     Passwd: os.Getenv("judo-test-password"),
-        //     Net:    "tcp",
-        //     Addr:   "127.0.0.1:3306",
-        //     DBName: "techniques",
-        // }
-        // // Get a database handle.
-        // var err error
-        // db, err = sql.Open("mysql", cfg.FormatDSN())
-        // if err != nil {
-        //     log.Fatal(err)
-        // }
+    // // if there is an error opening the connection, handle it
+    // if err != nil {
+    //     log.Print(err.Error())
+    // }
+    // defer db.Close()
 
-        // pingErr := db.Ping()
-        // if pingErr != nil {
-        //     log.Fatal(pingErr)
-        // }
-        // fmt.Println("Connected!")
+    // // Execute the query
+    // results, err := db.Query("SELECT id, name FROM techniques")
+    // if err != nil {
+    //     panic(err.Error()) // proper error handling instead of panic in your app
+    // }
+
+    // for results.Next() {
+    //     var technique Technique
+    //     // for each row, scan the result into our tag composite object
+    //     err = results.Scan(&technique.Id, &technique.Name)
+    //     if err != nil {
+    //         panic(err.Error()) // proper error handling instead of panic in your app
+    //     }
+    //             // and then print out the tag's Name attribute
+    //     log.Printf(technique.Name)
+    // }
+
+
     Techniques = []Technique{
         Technique{Id: "1", Name: "O-soto-otoshi", Belt: "yellow"},
         Technique{Id: "2", Name: "O-goshi", Belt: "yellow"},
