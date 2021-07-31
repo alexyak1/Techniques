@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/go-sql-driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -71,7 +71,7 @@ func handleRequests() {
     myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
     myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
     myRouter.HandleFunc("/technique/{id}", returnSingleTechnique)
-    log.Fatal(http.ListenAndServe(":8788", myRouter))
+    log.Fatal(http.ListenAndServe(":8787", myRouter))
 }
 
 func main() {
