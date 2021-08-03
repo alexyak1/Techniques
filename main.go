@@ -42,22 +42,10 @@ func initDB() {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Welcome to the HomePage of judo tecniques!")
+    fmt.Fprintf(w, "All techniques here: http://3.19.66.127:8787/techniques")
+
     fmt.Println("Endpoint Hit: homePage")
 }
-
-
-
-func returnSingleTechnique(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
-    key := vars["id"]
-
-    for _, technique := range Techniques {
-        if technique.Id == key {
-            json.NewEncoder(w).Encode(technique)
-        }
-    }
-}
-
 
 func createNewTechnique(w http.ResponseWriter, r *http.Request) {
     reqBody, _ := ioutil.ReadAll(r.Body)
@@ -86,9 +74,9 @@ func handleRequests() {
     myRouter := mux.NewRouter().StrictSlash(true)
     myRouter.HandleFunc("/", homePage)
     myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
+    myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
     myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
     myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
-    myRouter.HandleFunc("/technique/{id}", returnSingleTechnique)
     log.Fatal(http.ListenAndServe(":8787", myRouter))
 }
 
