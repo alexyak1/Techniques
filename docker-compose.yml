@@ -15,4 +15,9 @@ services:
       - MYSQL_ROOT_PASSWORD=judo-test-password
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
-
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: judo-test-password
+      MYSQL_DATABASE: techniques
