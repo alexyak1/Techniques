@@ -5,29 +5,47 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"main/controllers"
+	"main/database"
+	"main/entity"
 	"net/http"
 
-	// _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type Technique struct {
-    Id      string    `json:"Id"`
+    Id      string    `json:"id"`
     Name   string `json:"name"`
     Belt string `json:"belt"`
 }
 
 var Techniques []Technique
 
+
+func initDB() {
+    config :=
+        database.Config{
+            ServerName: "database:3306",
+            User: "root",
+            Password: "judo-test-password",
+            DB: "techniques",
+        }
+    connectionString := database.GetConnectionString(config)
+    err := database.Connect(connectionString)
+    if err != nil {
+        panic(err.Error())
+    }
+    database.Migrate(&entity.Technique{})
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Welcome to the HomePage of judo tecniques!")
     fmt.Println("Endpoint Hit: homePage")
 }
 
-func returnAllTechnique(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("Endpoint Hit: returnAllArticles")
-    json.NewEncoder(w).Encode(Techniques)
-}
+
 
 func returnSingleTechnique(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
@@ -67,7 +85,7 @@ func deleteTechnique(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
     myRouter := mux.NewRouter().StrictSlash(true)
     myRouter.HandleFunc("/", homePage)
-    myRouter.HandleFunc("/techniques", returnAllTechnique)
+    myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
     myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
     myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
     myRouter.HandleFunc("/technique/{id}", returnSingleTechnique)
@@ -75,39 +93,6 @@ func handleRequests() {
 }
 
 func main() {
-    // db, err := sql.Open("mysql", "root:judo-test-password@tcp(127.0.0.1:3306)/techniques")
-    // // if there is an error opening the connection, handle it
-    // if err != nil {
-    //     log.Print(err.Error())
-    // }
-    // defer db.Close()
-
-    // // Execute the query
-    // results, err := db.Query("SELECT id, name FROM techniques")
-    // if err != nil {
-    //     log.Printf("Error with query")
-
-    //     // panic(err.Error()) // proper error handling instead of panic in your app
-    // }
-
-    // for results.Next() {
-    //     var technique Technique
-    //     // for each row, scan the result into our tag composite object
-    //     err = results.Scan(&technique.Id, &technique.Name)
-    //     if err != nil {
-    //         log.Printf("Error with connection")
-
-    //         // panic(err.Error()) // proper error handling instead of panic in your app
-    //     }
-    //             // and then print out the tag's Name attribute
-    //     log.Printf(technique.Name)
-    // }
-
-
-    Techniques = []Technique{
-        Technique{Id: "1", Name: "O-soto-otoshi", Belt: "yellow"},
-        Technique{Id: "2", Name: "O-goshi", Belt: "yellow"},
-        Technique{Id: "3", Name: "Uchi-mata", Belt: "Orange"},
-    }
+    initDB()
     handleRequests()
 }
