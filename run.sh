@@ -1,5 +1,5 @@
 #!/bin/bash
 cd /home/ubuntu/projects/Techniques
-docker build -t techniques .
-docker rm -f techniques-container || true
-docker run -p 8787:8787 -d --name techniques-container techniques
+
+docker-compose build
+docker-compose up -d
