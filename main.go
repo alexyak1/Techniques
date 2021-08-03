@@ -27,7 +27,7 @@ var Techniques []Technique
 func initDB() {
     config :=
         database.Config{
-            ServerName: "database:3306",
+            ServerName: "godockerDB",
             User: "root",
             Password: "judo-test-password",
             DB: "techniques",
