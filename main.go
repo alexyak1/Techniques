@@ -42,7 +42,7 @@ func initDB() {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Welcome to the HomePage of judo tecniques!")
-    fmt.Fprintf(w, "All techniques here: http://3.19.66.127:8787/techniques")
+    fmt.Fprintf(w, "---All techniques here: http://3.15.169.17:8787/techniques")
 
     fmt.Println("Endpoint Hit: homePage")
 }
