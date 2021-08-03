@@ -1,28 +1,14 @@
-version: '2'
+version: '3.9'
 
 services:
   web:
-    image: techniques
+    build: .
     ports:
       - 8787:8787
-    depends_on:
-      - database
-    networks:
-      - backend
 
   database:
-    image: mysql/mysql-server:latest
+    image: mysql
     ports:
         - 3636:3636
     environment:
       - MYSQL_ROOT_PASSWORD=judo-test-password
-    volumes:
-      - /data:/var/lib/mysql
-    networks:
-      - backend
-
-networks:
-  backend:
-    name: backend
-    # driver: custom-driver
-
