@@ -8,9 +8,11 @@ services:
 
   database:
     image: mysql
+    volumes:
+      - db-data:/var/lib/mysql/data
     container_name: godockerDB
     ports:
-        - 3306:3306
+      - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=judo-test-password
 
