@@ -5,10 +5,20 @@ services:
     build: .
     ports:
       - 8787:8787
+<<<<<<< HEAD
+=======
+    depends_on:
+      - database
+>>>>>>> a2be84c00ed9782efe36083957542c0a48a207e8
 
   database:
     image: mysql
     ports:
-        - 3636:3636
+        - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=judo-test-password
+<<<<<<< HEAD
+=======
+    volumes:
+      - /data:/var/lib/mysql
+>>>>>>> a2be84c00ed9782efe36083957542c0a48a207e8
