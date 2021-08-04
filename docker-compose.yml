@@ -5,6 +5,9 @@ services:
     build: .
     ports:
       - 8787:8787
+    depends_on:
+      - database
+    restart: on-failure
 
   database:
     image: mysql
