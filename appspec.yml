@@ -4,11 +4,12 @@ files:
   - source: .
     destination: /projects/Techniques
 hooks:
-  AfterInstall:
-   - location: setup.sh
-     timeout: 300
-     runas: root
+  BeforeInstall:
+  - location: scripts/setup.sh
+    location: scripts/stop.sh
+    timeout: 300
+    runas: root
   ApplicationStart:
-   - location: run.sh
+   - location: scripts/run.sh
      timeout: 300
      runas: root
