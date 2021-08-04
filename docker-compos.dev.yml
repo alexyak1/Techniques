@@ -1,11 +1,6 @@
 version: '3.9'
 
 services:
-  web:
-    build: .
-    ports:
-      - 8787:8787
-
   database:
     image: mysql
     volumes:
@@ -15,4 +10,9 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=judo-test-password
+
+  web:
+    build: .
+    ports:
+      - 8787:8787
 
