@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"main/controllers"
 	"main/database"
@@ -21,8 +19,10 @@ type Technique struct {
     Belt string `json:"belt"`
 }
 
-var Techniques []Technique
-
+func main() {
+    initDB()
+    handleRequests()
+}
 
 func initDB() {
     config :=
@@ -40,47 +40,19 @@ func initDB() {
     database.Migrate(&entity.Technique{})
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Welcome to the HomePage of judo tecniques!")
-    fmt.Fprintf(w, "---All techniques here: http://3.15.169.17:8787/techniques")
-
-    fmt.Println("Endpoint Hit: homePage")
-}
-
-func createNewTechnique(w http.ResponseWriter, r *http.Request) {
-    reqBody, _ := ioutil.ReadAll(r.Body)
-    var technique Technique
-    json.Unmarshal(reqBody, &technique)
-
-    // fake update
-    Techniques = append(Techniques, technique)
-
-    json.NewEncoder(w).Encode(technique)
-}
-
-func deleteTechnique(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
-    id := vars["id"]
-
-    for index, technique := range Techniques {
-        if technique.Id == id {
-            Techniques = append(Techniques[:index], Techniques[index+1:]...)
-        }
-    }
-
-}
-
 func handleRequests() {
     myRouter := mux.NewRouter().StrictSlash(true)
     myRouter.HandleFunc("/", homePage)
     myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
     myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
-    myRouter.HandleFunc("/technique", createNewTechnique).Methods("POST")
-    myRouter.HandleFunc("/technique/{id}", deleteTechnique).Methods("DELETE")
+    myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
+    myRouter.HandleFunc("/technique/{id}", controllers.DeleteTechniqueById).Methods("DELETE")
     log.Fatal(http.ListenAndServe(":8787", myRouter))
 }
 
-func main() {
-    initDB()
-    handleRequests()
+func homePage(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Welcome to the HomePage of judo tecniques!")
+    fmt.Fprintf(w, "For get all endpoints come here: http://18.219.167.56:8787/techniques")
+
+    fmt.Println("Endpoint Hit: homePage")
 }
