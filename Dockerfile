@@ -13,7 +13,6 @@ RUN apk add --no-cache git
 ## go mod command for pull in any dependencies
 COPY go.mod ./
 COPY go.sum ./
-RUN go get -u github.com/gorilla/mux
 RUN go mod download
 
 ## Run go build to compile the binary
