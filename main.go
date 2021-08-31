@@ -13,12 +13,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type Technique struct {
-    Id      string    `json:"id"`
-    Name   string `json:"name"`
-    Belt string `json:"belt"`
-}
-
 func main() {
     initDB()
     handleRequests()
