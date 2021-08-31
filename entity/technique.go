@@ -5,5 +5,5 @@ type Technique struct {
     Name string `json:"name"`
     Belt string `json:"belt"`
     ImageURL string `json:"image_url"`
-    Type string `json: "type"`
+    Type string `json:"type"`
 }

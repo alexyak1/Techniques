@@ -51,3 +51,14 @@ func DeleteTechniqueById(w http.ResponseWriter, r *http.Request) {
 	database.Connector.Where("id = ?", id).Delete(&technique)
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func UpdateTechniqueById(w http.ResponseWriter, r *http.Request) {
+	requestBody, _ := ioutil.ReadAll(r.Body)
+	var technique entity.Technique
+	json.Unmarshal(requestBody, &technique)
+	database.Connector.Save(&technique)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(technique)
+}
