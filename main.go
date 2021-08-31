@@ -36,11 +36,11 @@ func initDB() {
 
 func handleRequests() {
     myRouter := mux.NewRouter().StrictSlash(true)
+    myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
+    myRouter.HandleFunc("/technique/{id}", controllers.DeleteTechniqueById).Methods("DELETE")
     myRouter.HandleFunc("/", homePage)
     myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
     myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
-    myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
-    myRouter.HandleFunc("/technique/{id}", controllers.DeleteTechniqueById).Methods("DELETE")
     log.Fatal(http.ListenAndServe(":8787", myRouter))
 }
 

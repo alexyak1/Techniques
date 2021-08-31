@@ -22,7 +22,8 @@
  {
     "Id": "4",
     "name": "Newly Created Post",
-    "belt": "yellow"
+    "belt": "yellow",
+    "image_url": "https://drive.google.com/url-path"
 }
 ```
  - Dlete technique: DELETE `localhost:8787/technique/{id}`

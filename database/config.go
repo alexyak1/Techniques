@@ -8,7 +8,6 @@ type Config struct {
 }
 
 var GetConnectionString = func(config Config) string {
-	// connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s", config.User, config.Password, config.ServerName, config.DB)
 	connectionString := "root:judo-test-password@tcp(godockerDB)/techniques"
 
 	return connectionString
