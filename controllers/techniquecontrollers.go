@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"main/database"
 	"main/entity"
@@ -36,7 +37,13 @@ func CreateTechnique(w http.ResponseWriter, r *http.Request) {
 	var technique entity.Technique
 	json.Unmarshal(requestBody, &technique)
 
-	database.Connector.Create(technique)
+	query := fmt.Sprintf(
+		"INSERT INTO techniques (name, belt, image_url, type) " +
+		"VALUES ('%s', '%s', '%s', '%s');",
+		technique.Name, technique.Belt, technique.ImageURL, technique.Type,
+	)
+
+	database.Connector.DB().QueryRow(query)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(technique)
