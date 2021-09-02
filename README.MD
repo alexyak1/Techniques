@@ -20,10 +20,10 @@
  - Add new technique: POST `localhost:8787/technique` with body example:
  ```json
  {
-    "Id": "4",
     "name": "Newly Created Post",
     "belt": "yellow",
-    "image_url": "https://drive.google.com/url-path"
+    "image_url": "https://drive.google.com/url-path",
+    "type": "Nage-Waza"
 }
 ```
  - Dlete technique: DELETE `localhost:8787/technique/{id}`
