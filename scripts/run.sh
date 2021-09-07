@@ -7,3 +7,5 @@ git pull origin master
 
 docker-compose build
 docker-compose up -d
+docker system prune
+docker-compose up -d web
