@@ -172,7 +172,7 @@ CREATE TABLE `engine_cost` (
 
 LOCK TABLES `engine_cost` WRITE;
 /*!40000 ALTER TABLE `engine_cost` DISABLE KEYS */;
-INSERT INTO `engine_cost` (`engine_name`, `device_type`, `cost_name`, `cost_value`, `last_update`, `comment`) VALUES ('default',0,'io_block_read_cost',NULL,'2021-08-31 09:29:13',NULL),('default',0,'memory_block_read_cost',NULL,'2021-08-31 09:29:13',NULL);
+INSERT INTO `engine_cost` (`engine_name`, `device_type`, `cost_name`, `cost_value`, `last_update`, `comment`) VALUES ('default',0,'io_block_read_cost',NULL,'2021-08-04 20:24:49',NULL),('default',0,'memory_block_read_cost',NULL,'2021-08-04 20:24:49',NULL);
 /*!40000 ALTER TABLE `engine_cost` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -352,7 +352,7 @@ UNLOCK TABLES;
 --
 
 /*!40000 ALTER TABLE `innodb_index_stats` DISABLE KEYS */;
-INSERT  IGNORE INTO `innodb_index_stats` VALUES ('mysql','component','PRIMARY','2021-08-31 09:29:13','n_diff_pfx01',0,1,'component_id'),('mysql','component','PRIMARY','2021-08-31 09:29:13','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('mysql','component','PRIMARY','2021-08-31 09:29:13','size',1,NULL,'Number of pages in the index'),('sys','sys_config','PRIMARY','2021-08-31 09:29:14','n_diff_pfx01',6,1,'variable'),('sys','sys_config','PRIMARY','2021-08-31 09:29:14','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('sys','sys_config','PRIMARY','2021-08-31 09:29:14','size',1,NULL,'Number of pages in the index'),('techniques','techniques','PRIMARY','2021-08-31 12:15:33','n_diff_pfx01',2,1,'id'),('techniques','techniques','PRIMARY','2021-08-31 12:15:33','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('techniques','techniques','PRIMARY','2021-08-31 12:15:33','size',1,NULL,'Number of pages in the index');
+INSERT  IGNORE INTO `innodb_index_stats` VALUES ('mysql','component','PRIMARY','2021-08-04 20:24:48','n_diff_pfx01',0,1,'component_id'),('mysql','component','PRIMARY','2021-08-04 20:24:48','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('mysql','component','PRIMARY','2021-08-04 20:24:48','size',1,NULL,'Number of pages in the index'),('sys','sys_config','PRIMARY','2021-08-04 20:24:50','n_diff_pfx01',2,1,'variable'),('sys','sys_config','PRIMARY','2021-08-04 20:24:50','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('sys','sys_config','PRIMARY','2021-08-04 20:24:50','size',1,NULL,'Number of pages in the index'),('techniques','techniques','PRIMARY','2021-09-07 11:37:53','n_diff_pfx01',31,1,'id'),('techniques','techniques','PRIMARY','2021-09-07 11:37:53','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('techniques','techniques','PRIMARY','2021-09-07 11:37:53','size',1,NULL,'Number of pages in the index');
 /*!40000 ALTER TABLE `innodb_index_stats` ENABLE KEYS */;
 
 --
@@ -360,7 +360,7 @@ INSERT  IGNORE INTO `innodb_index_stats` VALUES ('mysql','component','PRIMARY','
 --
 
 /*!40000 ALTER TABLE `innodb_table_stats` DISABLE KEYS */;
-INSERT  IGNORE INTO `innodb_table_stats` VALUES ('mysql','component','2021-08-31 09:29:13',0,1,0),('sys','sys_config','2021-08-31 09:29:14',6,1,0),('techniques','techniques','2021-08-31 12:15:33',2,1,0);
+INSERT  IGNORE INTO `innodb_table_stats` VALUES ('mysql','component','2021-08-04 20:24:48',0,1,0),('sys','sys_config','2021-08-04 20:24:50',2,1,0),('techniques','techniques','2021-09-07 11:37:53',31,1,0);
 /*!40000 ALTER TABLE `innodb_table_stats` ENABLE KEYS */;
 
 --
@@ -626,7 +626,7 @@ CREATE TABLE `server_cost` (
 
 LOCK TABLES `server_cost` WRITE;
 /*!40000 ALTER TABLE `server_cost` DISABLE KEYS */;
-INSERT INTO `server_cost` (`cost_name`, `cost_value`, `last_update`, `comment`) VALUES ('disk_temptable_create_cost',NULL,'2021-08-31 09:29:13',NULL),('disk_temptable_row_cost',NULL,'2021-08-31 09:29:13',NULL),('key_compare_cost',NULL,'2021-08-31 09:29:13',NULL),('memory_temptable_create_cost',NULL,'2021-08-31 09:29:13',NULL),('memory_temptable_row_cost',NULL,'2021-08-31 09:29:13',NULL),('row_evaluate_cost',NULL,'2021-08-31 09:29:13',NULL);
+INSERT INTO `server_cost` (`cost_name`, `cost_value`, `last_update`, `comment`) VALUES ('disk_temptable_create_cost',NULL,'2021-08-04 20:24:49',NULL),('disk_temptable_row_cost',NULL,'2021-08-04 20:24:49',NULL),('key_compare_cost',NULL,'2021-08-04 20:24:49',NULL),('memory_temptable_create_cost',NULL,'2021-08-04 20:24:49',NULL),('memory_temptable_row_cost',NULL,'2021-08-04 20:24:49',NULL),('row_evaluate_cost',NULL,'2021-08-04 20:24:49',NULL);
 /*!40000 ALTER TABLE `server_cost` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -790,7 +790,7 @@ CREATE TABLE `tables_priv` (
 
 LOCK TABLES `tables_priv` WRITE;
 /*!40000 ALTER TABLE `tables_priv` DISABLE KEYS */;
-INSERT INTO `tables_priv` VALUES ('localhost','mysql','mysql.session','user','boot@','0000-00-00 00:00:00','Select',''),('localhost','sys','mysql.sys','sys_config','root@localhost','2021-08-31 09:29:14','Select','');
+INSERT INTO `tables_priv` VALUES ('localhost','mysql','mysql.session','user','boot@','0000-00-00 00:00:00','Select',''),('localhost','sys','mysql.sys','sys_config','root@localhost','2021-08-04 20:24:50','Select','');
 /*!40000 ALTER TABLE `tables_priv` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -988,7 +988,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('%','root','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',0,0,0,0,'caching_sha2_password','$A$005$O98!rUc0ys`hT.Z\'wypuhZZIUXgHyqp6jXX6FJIFhcoDHGqoDUQ3Tzqdafo2','N','2021-08-31 09:29:20',NULL,'N','Y','Y',NULL,NULL,NULL,NULL),('localhost','mysql.infoschema','Y','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-31 09:29:14',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','mysql.session','N','N','N','N','N','N','N','Y','N','N','N','N','N','N','N','Y','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-31 09:29:14',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','mysql.sys','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-31 09:29:14',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','root','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',0,0,0,0,'caching_sha2_password','$A$005$#jb^F~Q{s%Wc=mXVACTvNlNChwSIV4KHo8QsJ8xQiVVg6ZOvUv68fWqfC','N','2021-08-31 09:29:20',NULL,'N','Y','Y',NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES ('%','root','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',0,0,0,0,'caching_sha2_password','$A$005$*Mq6^^rF\"\r\Zw0I8oZCAkS1terLK95wnLQ1CKHgnRMTDBsDcaphjhUS3gaYr3','N','2021-08-04 20:25:03',NULL,'N','Y','Y',NULL,NULL,NULL,NULL),('localhost','mysql.infoschema','Y','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-04 20:24:50',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','mysql.session','N','N','N','N','N','N','N','Y','N','N','N','N','N','N','N','Y','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-04 20:24:50',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','mysql.sys','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',0,0,0,0,'caching_sha2_password','$A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED','N','2021-08-04 20:24:50',NULL,'Y','N','N',NULL,NULL,NULL,NULL),('localhost','root','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',0,0,0,0,'caching_sha2_password','$A$005$8V.T],{fQ5zm4]t(XIPKPebMpJuiBgdMRIvsswVJnbLu89H5bz4w5YsKLiA','N','2021-08-04 20:25:03',NULL,'N','Y','Y',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1052,7 +1052,7 @@ CREATE TABLE `techniques` (
   `image_url` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1061,7 +1061,7 @@ CREATE TABLE `techniques` (
 
 LOCK TABLES `techniques` WRITE;
 /*!40000 ALTER TABLE `techniques` DISABLE KEYS */;
-INSERT INTO `techniques` VALUES (2,'O-goshi','yellow',NULL,NULL),(3,'O-soto-otoshi','yellow','https://drive.google.com/file/d/1p3JuGkd533lBv4lrzzUD4BibXy4Jjinz/view?usp=sharing',NULL);
+INSERT INTO `techniques` VALUES (1,'O-soto-otoshi','yellow','https://drive.google.com/file/d/1p3JuGkd533lBv4lrzzUD4BibXy4Jjinz/view?usp=sharing','Nage-Waza'),(2,'O-uchi-gari','yellow','https://drive.google.com/file/d/1APzyii2ibDU82E_OZXilW3fl7_KZMFSr/view?usp=sharing','Nage-Waza'),(3,'O-goshi','yellow','https://drive.google.com/file/d/1V_CtDZUFY3T8Q3Zt4tKqXpBc9YV4G-j-/view?usp=sharing','Nage-Waza'),(4,'Mune-gatame','yellow','https://drive.google.com/file/d/1zoDxMR04Zi6RudTyegS_m39GHNbt49kZ/view?usp=sharing','Osaekomi-Waza'),(9,'Kuzure-kesa-gatame','yellow','https://drive.google.com/file/d/1fcfVAvjw6Ec8J3qnPvPpGVDfck2j5fn8/view?usp=sharing','Osaekomi-Waza'),(10,'Ko-soto-gari','yellow','https://drive.google.com/file/d/1zN2obD93q6xNl2bCpmDYXitb5LwysA7q/view?usp=sharing','Nage-Waza'),(11,'Ko-uchi-gari','yellow','https://drive.google.com/file/d/13Au37XbZXHxEcvqEbf_yFDhNGN9oCgiD/view?usp=sharing','Nage-Waza'),(12,'Hiza-guruma','yellow','https://drive.google.com/file/d/1_TcaJVLmIha2-q8uh3wa1xHoLxHtx3Tn/view?usp=sharing','Nage-Waza'),(13,'Eri-seoi-nage','yellow','https://drive.google.com/file/d/1sE9ACTQch9nTm_OZN6OQKPk66ZotIA4W/view?usp=sharing','Nage-Waza'),(14,'Koshi-guruma','yellow','https://drive.google.com/file/d/1TkOP0wbnN0CWQ-r8yVUzhDGSzKlD0XEm/view?usp=sharing','Nage-Waza'),(15,'Kami-shiho-gatame','yellow','https://drive.google.com/file/d/1vypc8zfwcNwAYk3CzD2QvPGf2y_8Hdtq/view?usp=sharing','Osaekomi-Waza'),(16,'Tate-shiho-gatame','yellow','https://drive.google.com/file/d/1JOAKswZmPIH2BVMKUHWClvTKsGrQgiOT/view?usp=sharing','Osaekomi-Waza'),(17,'De-ashi-harai','orange','https://drive.google.com/file/d/1DBMv0FlGz929TKMCaFTR-eiOavaGM5Rb/view?usp=sharing','Nage-Waza'),(18,'Ko-soto-gake','orange','https://drive.google.com/file/d/16j-npVYVR4pAJvJV_CKX51EqSnbBJUBz/view?usp=sharing','Nage-Waza'),(19,'Ippon-seoi-nage','orange','https://drive.google.com/file/d/1TvnUyAXTxeunJF1XflN_yW_dDl2fwRJB/view?usp=sharing','Nage-Waza'),(20,'Morote-seoi-nage','orange','https://drive.google.com/file/d/1ufSl4n22UXMNQkSqBxbudvHJZLDkwbTr/view?usp=sharing','Nage-Waza'),(21,'Tsuri-komi-goshi','orange','https://drive.google.com/file/d/1YdF5tioCh0Riz3vPiAkqy7PtdMzgt5Wr/view?usp=sharing','Nage-Waza'),(22,'Kubi-nage','orange','https://drive.google.com/file/d/10v5XIdURJXmAFAQC-Mg65RbsFfHPKLWT/view?usp=sharing','Nage-Waza'),(23,'Ushiro-kesa-gatame','orange','https://drive.google.com/file/d/10v5XIdURJXmAFAQC-Mg65RbsFfHPKLWT/view?usp=sharing','Osaekomi-Waza'),(24,'Kuzure-yoko-shiho-gatame','orange','https://drive.google.com/file/d/1FZp0THEJ47OBC-e8RPXPav5mLcDoBSce/view?usp=sharing','Osaekomi-Waza'),(25,'O-soto-gari','orange','https://drive.google.com/file/d/10I2O8sPkylJEFHx35z8G30WzSDgY3Yz_/view?usp=sharing','Nage-Waza'),(26,'Tsuri-goshi','orange','https://drive.google.com/file/d/1u9qlv3Gy34vI46O8UD9WC-AokTHNgbbP/view?usp=sharing','Nage-Waza'),(27,'Tai-otoshi','orange','https://drive.google.com/file/d/1AXM4cFEje0dQ1Z6KmfKaRRhSHw7VYKJo/view?usp=sharing','Nage-Waza'),(28,'Uchi-mata','orange','https://drive.google.com/file/d/16XWRbPj2cj4MtNY3pIuJdzChfq2twDNF/view?usp=sharing','Nage-Waza'),(29,'Harai-goshi','orange','https://drive.google.com/file/d/1zD67DXdh8AqLsdXXuuoiTcU7z0fkn3Gz/view?usp=sharing','Nage-Waza'),(30,'Yoko-shiho-gatame','orange','https://drive.google.com/file/d/1Q8dFGgVE8hRR5gsozj0L1oEuUWlL0g5C/view?usp=sharing','Osaekomi-Waza'),(31,'Kesa-gatame','orange','https://drive.google.com/file/d/1MZE17XwQBuL4o7XK5FFU-2zX_AP4am-0/view?usp=sharing','Osaekomi-Waza'),(32,'Gyaku-juji-jime','orange','https://drive.google.com/file/d/1cCYo3E84m_vOneQbuLKJcxH6wcTeaNhw/view?usp=sharing','Shime-Waza'),(33,'Nami-juji-jime','orange','https://drive.google.com/file/d/18ri-ALP525z8eCJLkmF-ZKLtpj7J9OeI/view?usp=sharing','Shime-Waza'),(34,'Kata-juji-jime','orange','https://drive.google.com/file/d/1Iv-GnvYlUJ1F3j0bJY-Mo9Aybk4tkFNO/view?usp=sharing','Shime-Waza'),(35,'Ude-garami','orange','https://drive.google.com/file/d/12fWDqXD8cyTtrhkA6PmOcV0DvzZfO7Cm/view?usp=sharing','Kansetsu-Waza'),(36,'Juji-gatame','orange','https://drive.google.com/file/d/1tiu0rL79egqINJHBa315l_zV2ntpH_FW/view?usp=sharing','Kansetsu-Waza');
 /*!40000 ALTER TABLE `techniques` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1075,4 +1075,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-31 12:20:15
+-- Dump completed on 2021-09-07 13:27:33
