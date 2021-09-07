@@ -15,7 +15,12 @@ import (
 
 func GetAllTechniques(w http.ResponseWriter, r *http.Request) {
 	var techniques []entity.Technique
-	database.Connector.Find(&techniques)
+
+	if belt, ok := r.URL.Query()["belt"]; ok {
+		database.Connector.Where("belt = ?", belt).Find(&techniques)
+	} else {
+		database.Connector.Find(&techniques)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

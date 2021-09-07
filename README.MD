@@ -16,6 +16,7 @@
  if you run locally come to `localhost:8787/`
 
  - Get all techniques: GET `localhost:8787/techniques`
+ - Get all techniques with filter by belt: GET `localhost:8787/techniques?belt=yellow`
  - Get technique by id: GET `localhost:8787/technique{id}`
  - Add new technique: POST `localhost:8787/technique` with body example:
  ```json
