@@ -14,15 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Hello(name string) (string, error) {
-    // If no name was given, return an error with a message.
-    if name == "" {
-        return name, errors.New("empty name")
-    }
-    // Create a message using a random format.
-    message := fmt.Sprintf(randomFormat(), name)
-    return message, nil
-}
+
 func randomFormat() string {
     // A slice of message formats.
     formats := []string{
@@ -95,4 +87,14 @@ func UpdateTechniqueById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(technique)
+}
+//Function just for play with tests
+func Hello(name string) (string, error) {
+    // If no name was given, return an error with a message.
+    if name == "" {
+        return name, errors.New("empty name")
+    }
+    // Create a message using a random format.
+    message := fmt.Sprintf(randomFormat(), name)
+    return message, nil
 }
