@@ -44,6 +44,7 @@ func GetAllTechniques(w http.ResponseWriter, r *http.Request) {
 		database.Connector.Find(&techniques)
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
     json.NewEncoder(w).Encode(techniques)
@@ -55,6 +56,7 @@ func GetTechniqueById(w http.ResponseWriter, r *http.Request) {
 
 	var technique entity.Technique
 	database.Connector.First(&technique, key)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(technique)
 }
@@ -71,6 +73,7 @@ func CreateTechnique(w http.ResponseWriter, r *http.Request) {
 	)
 
 	database.Connector.DB().QueryRow(query)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(technique)
@@ -92,6 +95,7 @@ func UpdateTechniqueById(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(requestBody, &technique)
 	database.Connector.Save(&technique)
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(technique)
