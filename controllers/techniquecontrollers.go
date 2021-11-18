@@ -14,27 +14,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Hello(name string) (string, error) {
-    // If no name was given, return an error with a message.
-    if name == "" {
-        return name, errors.New("empty name")
-    }
-    // Create a message using a random format.
-    message := fmt.Sprintf(randomFormat(), name)
-    return message, nil
-}
-func randomFormat() string {
-    // A slice of message formats.
-    formats := []string{
-        "Hi, %v. Welcome!",
-        "Great to see you, %v!",
-        "Hail, %v! Well met!",
-    }
-
-    // Return one of the message formats selected at random.
-    return formats[rand.Intn(len(formats))]
-}
-
 func GetAllTechniques(w http.ResponseWriter, r *http.Request) {
 	var techniques []entity.Technique
 
@@ -47,12 +26,12 @@ func GetAllTechniques(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-    json.NewEncoder(w).Encode(techniques)
+	json.NewEncoder(w).Encode(techniques)
 }
 
 func GetTechniqueById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-    key := vars["id"]
+	key := vars["id"]
 
 	var technique entity.Technique
 	database.Connector.First(&technique, key)
@@ -67,8 +46,8 @@ func CreateTechnique(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(requestBody, &technique)
 
 	query := fmt.Sprintf(
-		"INSERT INTO techniques (name, belt, image_url, type) " +
-		"VALUES ('%s', '%s', '%s', '%s');",
+		"INSERT INTO techniques (name, belt, image_url, type) "+
+			"VALUES ('%s', '%s', '%s', '%s');",
 		technique.Name, technique.Belt, technique.ImageURL, technique.Type,
 	)
 
@@ -99,4 +78,28 @@ func UpdateTechniqueById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(technique)
+}
+
+//Function just for play with tests
+func Hello(name string) (string, error) {
+	// If no name was given, return an error with a message.
+	if name == "" {
+		return name, errors.New("empty name")
+	}
+	// Create a message using a random format.
+	message := fmt.Sprintf(randomFormat(), name)
+	return message, nil
+}
+
+//Function just for play with tests
+func randomFormat() string {
+	// A slice of message formats.
+	formats := []string{
+		"Hi, %v. Welcome!",
+		"Great to see you, %v!",
+		"Hail, %v! Well met!",
+	}
+
+	// Return one of the message formats selected at random.
+	return formats[rand.Intn(len(formats))]
 }
