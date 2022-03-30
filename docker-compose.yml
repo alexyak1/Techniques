@@ -1,27 +1,27 @@
 version: '2.2'
 
 services:
-  database:
-    image: mysql
-    container_name: godockerDB
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=judo-test-password
-    volumes:
-      - mysql:/var/lib/mysql
+  # database:
+  #   image: mysql
+  #   container_name: godockerDB
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=judo-test-password
+  #   volumes:
+  #     - mysql:/var/lib/mysql
 
   web:
     build: .
     ports:
       - 8787:8787
-    depends_on:
-      - database
-    environment:
-      - WAIT_HOSTS=database:3306
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
+    # depends_on:
+    #   - database
+    # environment:
+    #   - WAIT_HOSTS=database:3306
+    #   - WAIT_HOSTS_TIMEOUT=300
+    #   - WAIT_SLEEP_INTERVAL=30
+    #   - WAIT_HOST_CONNECT_TIMEOUT=30
 
-volumes:
-  mysql:
+# volumes:
+#   mysql:
