@@ -14,5 +14,5 @@ services:
   web:
     build: .
     ports:
-      - 8787:8787
+      - 8000:8000
 

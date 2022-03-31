@@ -14,7 +14,7 @@ services:
   web:
     build: .
     ports:
-      - 8787:8787
+      - 80:80
     # depends_on:
     #   - database
     # environment:

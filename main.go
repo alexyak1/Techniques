@@ -46,12 +46,12 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
 	myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
-	log.Fatal(http.ListenAndServe(":8787", myRouter))
+	log.Fatal(http.ListenAndServe(":80", myRouter))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo tecniques! ")
-	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n http://18.221.140.18:8787/techniques")
+	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n http://18.221.140.18:80/techniques")
 
 	fmt.Println("Endpoint Hit: homePage")
 }
