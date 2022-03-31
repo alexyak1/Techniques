@@ -43,8 +43,9 @@ func handleRequests() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		port = "8787"
 	}
+	fmt.Println(port)
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
@@ -60,8 +61,10 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		port = "8787"
 	}
+	fmt.Println(port)
+
 	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo tecniques! ")
 	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n http://18.221.140.18:"+port+"/techniques")
 
