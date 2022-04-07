@@ -9,7 +9,7 @@ type Config struct {
 
 var GetConnectionString = func(config Config) string {
 	// connectionString := "root:judo-test-password@tcp(godockerDB)/techniques"
-	connectionString := "sql11482611:ccFfrgmwy7@tcp(sql11.freemysqlhosting.net)/sql11482611"
+	connectionString := "hzhf7kfMUy:KEipZ4ZkgD@tcp(remotemysql.com)/hzhf7kfMUy"
 
 	return connectionString
 }

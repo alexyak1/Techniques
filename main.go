@@ -26,9 +26,9 @@ func initDB() {
 			// User: "root",
 			// Password: "judo-test-password",
 			// DB: "techniques",
-			ServerName: "sql11.freemysqlhosting.net",
-			User:       "sql11482611",
-			Password:   "ccFfrgmwy7",
+			ServerName: "remotemysql.com",
+			User:       "hzhf7kfMUy",
+			Password:   "KEipZ4ZkgD",
 			DB:         "sql11482611",
 		}
 	connectionString := database.GetConnectionString(config)
