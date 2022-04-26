@@ -22,15 +22,18 @@ func main() {
 func initDB() {
 	config :=
 		database.Config{
-			// ServerName: "godockerDB",
-			// User: "root",
-			// Password: "judo-test-password",
-			// DB: "techniques",
 			ServerName: "remotemysql.com",
 			User:       "hzhf7kfMUy",
-			Password:   "KEipZ4ZkgD",
+			Hash:       "KEipZ4ZkgD",
 			DB:         "sql11482611",
 		}
+		//For docker DB:
+		// database.Config{
+		// ServerName: "godockerDB",
+		// User: "root",
+		// Password: "judo-test-password",
+		// DB: "techniques",
+		// }
 	connectionString := database.GetConnectionString(config)
 	err := database.Connect(connectionString)
 	if err != nil {

@@ -11,8 +11,7 @@ var Connector *gorm.DB
 
 func Connect(connectionString string) error {
 	var err error
-	// Connector, err = gorm.Open("mysql", "root:judo-test-password@tcp(godockerDB)/techniques")
-	Connector, err = gorm.Open("mysql", "hzhf7kfMUy:KEipZ4ZkgD@tcp(remotemysql.com)/hzhf7kfMUy")
+	Connector, err = gorm.Open("mysql", connectionString)
 	if err != nil {
 		return err
 	}
