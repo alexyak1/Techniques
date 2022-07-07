@@ -21,7 +21,6 @@ func main() {
 
 func initDB() {
 	db_password := os.Getenv("DB_PASSWORD")
-
 	config :=
 		database.Config{}
 	if db_password != "" {
@@ -41,8 +40,6 @@ func initDB() {
 				DB:         "techniques",
 			}
 	}
-	fmt.Println("config.Hash")
-	fmt.Println(config.Hash)
 	connectionString := database.GetConnectionString(config)
 	err := database.Connect(connectionString)
 	if err != nil {
