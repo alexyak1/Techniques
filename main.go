@@ -20,20 +20,29 @@ func main() {
 }
 
 func initDB() {
+	db_password := os.Getenv("DB_PASSWORD")
+
 	config :=
-		database.Config{
-			ServerName: "remotemysql.com",
-			User:       "hzhf7kfMUy",
-			Hash:       "KEipZ4ZkgD",
-			DB:         "sql11482611",
-		}
-		//For docker DB:
-		// database.Config{
-		// ServerName: "godockerDB",
-		// User: "root",
-		// Password: "judo-test-password",
-		// DB: "techniques",
-		// }
+		database.Config{}
+	if db_password != "" {
+		config =
+			database.Config{
+				ServerName: "remotemysql.com",
+				User:       "hzhf7kfMUy",
+				Hash:       db_password,
+				DB:         "hzhf7kfMUy",
+			}
+	} else {
+		config =
+			database.Config{
+				ServerName: "godockerDB",
+				User:       "root",
+				Hash:       "judo-test-password",
+				DB:         "techniques",
+			}
+	}
+	fmt.Println("config.Hash")
+	fmt.Println(config.Hash)
 	connectionString := database.GetConnectionString(config)
 	err := database.Connect(connectionString)
 	if err != nil {
