@@ -14,9 +14,8 @@ import (
 
 var Connector *gorm.DB
 
-func Connect(connectionString string) error {
+func Connect() error {
 	var err error
-	Connector, err = gorm.Open("mysql", connectionString)
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)

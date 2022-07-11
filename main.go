@@ -41,11 +41,11 @@ func initDB() {
 	// 		}
 	// }
 	// connectionString := database.GetConnectionString(config)
-	connectionString := ""
-	err := database.Connect(connectionString)
-	if err != nil {
-		panic(err.Error())
-	}
+	database.Connect()
+	// err := database.Connect(connectionString)
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
 	database.Migrate(&entity.Technique{})
 }
 
