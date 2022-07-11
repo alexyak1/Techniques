@@ -26,10 +26,10 @@ func initDB() {
 	if db_password != "" {
 		config =
 			database.Config{
-				ServerName: "remotemysql.com",
-				User:       "hzhf7kfMUy",
+				ServerName: "ec2-34-248-169-69.eu-west-1.compute.amazonaws.com",
+				User:       "llxgckjvfqvhuw",
 				Hash:       db_password,
-				DB:         "hzhf7kfMUy",
+				DB:         "d6juhn5dera7pp",
 			}
 	} else {
 		config =
