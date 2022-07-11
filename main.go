@@ -20,27 +20,28 @@ func main() {
 }
 
 func initDB() {
-	db_password := os.Getenv("DB_PASSWORD")
-	config :=
-		database.Config{}
-	if db_password != "" {
-		config =
-			database.Config{
-				ServerName: "ec2-34-248-169-69.eu-west-1.compute.amazonaws.com",
-				User:       "llxgckjvfqvhuw",
-				Hash:       db_password,
-				DB:         "d6juhn5dera7pp",
-			}
-	} else {
-		config =
-			database.Config{
-				ServerName: "godockerDB",
-				User:       "root",
-				Hash:       "judo-test-password",
-				DB:         "techniques",
-			}
-	}
-	connectionString := database.GetConnectionString(config)
+	// db_password := os.Getenv("DB_PASSWORD")
+	// config :=
+	// 	database.Config{}
+	// if db_password != "" {
+	// 	config =
+	// 		database.Config{
+	// 			ServerName: "ec2-34-248-169-69.eu-west-1.compute.amazonaws.com",
+	// 			User:       "llxgckjvfqvhuw",
+	// 			Hash:       db_password,
+	// 			DB:         "d6juhn5dera7pp",
+	// 		}
+	// } else {
+	// 	config =
+	// 		database.Config{
+	// 			ServerName: "godockerDB",
+	// 			User:       "root",
+	// 			Hash:       "judo-test-password",
+	// 			DB:         "techniques",
+	// 		}
+	// }
+	// connectionString := database.GetConnectionString(config)
+	connectionString := ""
 	err := database.Connect(connectionString)
 	if err != nil {
 		panic(err.Error())
