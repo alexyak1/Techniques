@@ -1,11 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"main/controllers"
-	"main/database"
-	"main/entity"
 	"net/http"
 	"os"
 
@@ -20,33 +19,15 @@ func main() {
 }
 
 func initDB() {
-	// db_password := os.Getenv("DB_PASSWORD")
-	// config :=
-	// 	database.Config{}
-	// if db_password != "" {
-	// 	config =
-	// 		database.Config{
-	// 			ServerName: "ec2-34-248-169-69.eu-west-1.compute.amazonaws.com",
-	// 			User:       "llxgckjvfqvhuw",
-	// 			Hash:       db_password,
-	// 			DB:         "d6juhn5dera7pp",
-	// 		}
-	// } else {
-	// 	config =
-	// 		database.Config{
-	// 			ServerName: "godockerDB",
-	// 			User:       "root",
-	// 			Hash:       "judo-test-password",
-	// 			DB:         "techniques",
-	// 		}
-	// }
-	// connectionString := database.GetConnectionString(config)
-	database.Connect()
-	// err := database.Connect(connectionString)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	database.Migrate(&entity.Technique{})
+	var err error
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Connection success")
+	log.Println(db)
+	// database.Migrate(&entity.Technique{})
 }
 
 func handleRequests() {
@@ -55,7 +36,7 @@ func handleRequests() {
 	if port == "" {
 		port = "8787"
 	}
-	fmt.Println(port)
+	fmt.Printf("Port is: %s", port)
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
