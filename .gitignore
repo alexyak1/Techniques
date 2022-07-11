@@ -8,3 +8,6 @@
 # Testing
 *.test
 *.tmp
+
+# Sensitive data
+.env

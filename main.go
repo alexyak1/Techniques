@@ -1,10 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"main/controllers"
+	"main/database"
+	"main/entity"
 	"net/http"
 	"os"
 
@@ -19,15 +20,32 @@ func main() {
 }
 
 func initDB() {
-	var err error
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatal(err)
+	db_password := os.Getenv("DB_PASSWORD")
+	config :=
+		database.Config{}
+	if db_password != "" {
+		config =
+			database.Config{
+				ServerName: "remotemysql.com",
+				User:       "hzhf7kfMUy",
+				Hash:       db_password,
+				DB:         "hzhf7kfMUy",
+			}
+	} else {
+		config =
+			database.Config{
+				ServerName: "godockerDB",
+				User:       "root",
+				Hash:       "judo-test-password",
+				DB:         "techniques",
+			}
 	}
-
-	log.Println("Connection success")
-	log.Println(db)
-	// database.Migrate(&entity.Technique{})
+	connectionString := database.GetConnectionString(config)
+	err := database.Connect(connectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+	database.Migrate(&entity.Technique{})
 }
 
 func handleRequests() {
@@ -36,7 +54,7 @@ func handleRequests() {
 	if port == "" {
 		port = "8787"
 	}
-	fmt.Printf("Port is: %s", port)
+	fmt.Println(port)
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
