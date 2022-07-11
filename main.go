@@ -33,7 +33,7 @@ func initDB() {
 		// 	}
 		config =
 			database.Config{
-				ServerName: "db4free.net/",
+				ServerName: "db4free.net",
 				User:       "notrootuser",
 				Hash:       db_password,
 				DB:         "techniques",
