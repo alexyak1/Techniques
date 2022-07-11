@@ -27,16 +27,16 @@ func initDB() {
 		// config =
 		// 	database.Config{
 		// 		ServerName: "remotemysql.com",
-		// 		User:       "hzhf7kfMUy",
+		// 		User:       "freedb_alexyak1",
 		// 		Hash:       db_password,
 		// 		DB:         "hzhf7kfMUy",
 		// 	}
 		config =
 			database.Config{
-				ServerName: "db4free.net",
-				User:       "notrootuser",
+				ServerName: "sql.freedb.tech",
+				User:       "freedb_alexyak1",
 				Hash:       db_password,
-				DB:         "techniques",
+				DB:         "freedb_techniques",
 			}
 	} else {
 		config =
@@ -50,7 +50,7 @@ func initDB() {
 	connectionString := database.GetConnectionString(config)
 	err := database.Connect(connectionString)
 	if err != nil {
-		fmt.Printf("Connection problem to SQL")
+		fmt.Printf("Connection problem to SQL. ")
 	}
 	database.Migrate(&entity.Technique{})
 }
