@@ -116,6 +116,12 @@ INSERT INTO `techniques` (`id`, `name`, `belt`, `image_url`, `type`) VALUES
 (79, 'Tsukomi-jime', 'blue', 'https://drive.google.com/file/d/16yJT2JY3JTbkBkgEukBwvOxJ7FbKHKbs/view?usp=sharing', 'Shime-waza'),
 (80, 'Kannuki-gatame', 'blue', 'https://drive.google.com/file/d/1kxgRXpPKXiU3frFbpr5y9QvWwKXdo-l4/view?usp=sharing', 'Kansetsu-waza'),
 (81, 'Hiza-gatame', 'blue', 'https://drive.google.com/file/d/1GiV02hv39KucJXxly6pzGG57wP762Ll2/view?usp=sharing', 'Kansetsu-waza');
+(82, 'Kata-guruma', 'brown', 'https://drive.google.com/file/d/1LUpIwkmH63XTynb4yLtZKPjbmaYb5bpo/view?usp=sharing', 'Kansetsu-waza');
+(83, 'Yoko-wakare', 'brown', 'https://drive.google.com/file/d/1TwLqgThhvEtqjukcyNfbEYhKqSSnZ3Ha/view?usp=sharing', 'Kansetsu-waza');
+(84, 'Sumi-otoshi', 'brown', 'https://drive.google.com/file/d/1sfWRSPDm3LQ3NoL_V-UM2SL5CsTQJG_r/view?usp=sharing', 'Kansetsu-waza');
+(85, 'Uki-otoshi', 'brown', 'https://drive.google.com/file/d/1OZMG9avL8sMlcRuN12Mais1C8UZf6_K0/view?usp=sharing', 'Kansetsu-waza');
+(86, 'O-soto-guruma', 'brown', 'https://drive.google.com/file/d/1ToCy6kbZOo1BDprVsqsTseOqtTYvE_9Z/view?usp=sharing', 'Kansetsu-waza');
+(87, 'Utsuri-gosh', 'brown', 'https://drive.google.com/file/d/1IudtIOUYl9cbUY6316j9o7Jn9Ehu3Scz/view?usp=sharing', 'Kansetsu-waza');
 
 --
 -- Indexes for dumped tables
@@ -135,7 +141,7 @@ ALTER TABLE `techniques`
 -- AUTO_INCREMENT for table `techniques`
 --
 ALTER TABLE `techniques`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

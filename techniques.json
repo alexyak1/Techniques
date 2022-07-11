@@ -1,83 +1,585 @@
 [
-{"type":"header","version":"4.8.5","comment":"Export to JSON plugin for PHPMyAdmin"},
-{"type":"database","name":"hzhf7kfMUy"},
-{"type":"table","name":"techniques","database":"hzhf7kfMUy","data":
-[
-{"id":"1","name":"O-soto-otoshi","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1p3JuGkd533lBv4lrzzUD4BibXy4Jjinz\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"2","name":"O-uchi-gari","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1APzyii2ibDU82E_OZXilW3fl7_KZMFSr\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"3","name":"O-goshi","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1V_CtDZUFY3T8Q3Zt4tKqXpBc9YV4G-j-\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"4","name":"Mune-gatame","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1zoDxMR04Zi6RudTyegS_m39GHNbt49kZ\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"9","name":"Kuzure-kesa-gatame","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1fcfVAvjw6Ec8J3qnPvPpGVDfck2j5fn8\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"10","name":"Ko-soto-gari","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1zN2obD93q6xNl2bCpmDYXitb5LwysA7q\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"11","name":"Ko-uchi-gari","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/13Au37XbZXHxEcvqEbf_yFDhNGN9oCgiD\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"12","name":"Hiza-guruma","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1_TcaJVLmIha2-q8uh3wa1xHoLxHtx3Tn\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"13","name":"Eri-seoi-nage","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1sE9ACTQch9nTm_OZN6OQKPk66ZotIA4W\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"14","name":"Koshi-guruma","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1TkOP0wbnN0CWQ-r8yVUzhDGSzKlD0XEm\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"15","name":"Kami-shiho-gatame","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1vypc8zfwcNwAYk3CzD2QvPGf2y_8Hdtq\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"16","name":"Tate-shiho-gatame","belt":"yellow","image_url":"https:\/\/drive.google.com\/file\/d\/1JOAKswZmPIH2BVMKUHWClvTKsGrQgiOT\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"17","name":"De-ashi-harai","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1DBMv0FlGz929TKMCaFTR-eiOavaGM5Rb\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"18","name":"Ko-soto-gake","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1LThq0v77RYY4MMzp4K-lR0k3YkiA8rqO\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"19","name":"Ippon-seoi-nage","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1TvnUyAXTxeunJF1XflN_yW_dDl2fwRJB\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"20","name":"Morote-seoi-nage","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1ufSl4n22UXMNQkSqBxbudvHJZLDkwbTr\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"21","name":"Tsuri-komi-goshi","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1YdF5tioCh0Riz3vPiAkqy7PtdMzgt5Wr\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"22","name":"Kubi-nage","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/10v5XIdURJXmAFAQC-Mg65RbsFfHPKLWT\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"23","name":"Ushiro-kesa-gatame","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/16tJ6byvyVvTYA_puG5yVrI9BOT1_jXV9\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"24","name":"Kuzure-yoko-shiho-gatame","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1FZp0THEJ47OBC-e8RPXPav5mLcDoBSce\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"25","name":"O-soto-gari","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/10I2O8sPkylJEFHx35z8G30WzSDgY3Yz_\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"26","name":"Tsuri-goshi","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1WQ7aOMpjwckzlPz3xYRsc0zfvAbp-GYT\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"27","name":"Tai-otoshi","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1vs7G7rDe5UYdVJO2W0hgN6RM74d1Je33\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"28","name":"Uchi-mata","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/16XWRbPj2cj4MtNY3pIuJdzChfq2twDNF\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"29","name":"Harai-goshi","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1zD67DXdh8AqLsdXXuuoiTcU7z0fkn3Gz\/view?usp=sharing","type":"Nage-Waza"},
-{"id":"30","name":"Yoko-shiho-gatame","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1Q8dFGgVE8hRR5gsozj0L1oEuUWlL0g5C\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"31","name":"Kesa-gatame","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1MZE17XwQBuL4o7XK5FFU-2zX_AP4am-0\/view?usp=sharing","type":"Osaekomi-Waza"},
-{"id":"32","name":"Gyaku-juji-jime","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1cCYo3E84m_vOneQbuLKJcxH6wcTeaNhw\/view?usp=sharing","type":"Shime-Waza"},
-{"id":"33","name":"Nami-juji-jime","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/18ri-ALP525z8eCJLkmF-ZKLtpj7J9OeI\/view?usp=sharing","type":"Shime-Waza"},
-{"id":"34","name":"Kata-juji-jime","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1Iv-GnvYlUJ1F3j0bJY-Mo9Aybk4tkFNO\/view?usp=sharing","type":"Shime-Waza"},
-{"id":"35","name":"Ude-garami","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/12fWDqXD8cyTtrhkA6PmOcV0DvzZfO7Cm\/view?usp=sharing","type":"Kansetsu-Waza"},
-{"id":"36","name":"Juji-gatame","belt":"orange","image_url":"https:\/\/drive.google.com\/file\/d\/1tiu0rL79egqINJHBa315l_zV2ntpH_FW\/view?usp=sharing","type":"Kansetsu-Waza"},
-{"id":"37","name":"Sasae-tsuri-komi-ashi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1kwT2TrvX7SwrpwmdfzDypJgvqVaeqm3t\/view?usp=sharing","type":"Nage-waza"},
-{"id":"38","name":"Sode-tsuri-komi-goshi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1MmwKkINptunQ9EBzxtDoOfUcN1lqQYAP\/view?usp=sharing","type":"Nage-waza"},
-{"id":"39","name":"Uki-goshi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1c8WnN3dRwEhf-91ZXy6ziPfac2KEJEO1\/view?usp=sharing","type":"Nage-waza"},
-{"id":"40","name":"Seoi-otoshi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/13v1PXsibNJObwqIM2rMtKFfCTID1hmxk\/view?usp=sharing","type":"Nage-waza"},
-{"id":"41","name":"Okuri-ashi-harai(barai)","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1ZlpIzCHfWdjMOaensrHgQwbs4Q0E1k9u\/view?usp=sharing","type":"Nage-waza"},
-{"id":"42","name":"Kuzure-kami-shiho-gatame","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1NXleroQoEx6eCIrYhaxfp0zlZvWZifTF\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"43","name":"Hadaka-jime","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1kiW8LleNqjFKSmZQQz57VK-br9e8OIan\/view?usp=sharing","type":"Shime-waza"},
-{"id":"44","name":"Okuri-eri-jime","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1_A5eYn96gND_5VLPLjYmW26aPUWWN3-_\/view?usp=sharing","type":"Shime-waza"},
-{"id":"45","name":"Ude-gatame","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1gwgXUYF16Ghx_dvpDUeR9Ju-Gk9sSmx4\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"47","name":"Harai-tsuri-komi-ashi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1P5ZWhRSRFqmzUCp26X5861vCqgzz0ppg\/view?usp=sharing","type":"Nage-waza"},
-{"id":"48","name":"Tani-otoshi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1WJrsR3-KaDJVgWKWwxo_j689blTFCuc6\/view?usp=sharing","type":"Nage-waza"},
-{"id":"49","name":"Yoko-sumi-gaeshi","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/10u9_f3tn7agWfLKqrZiKMqX1CaHTTzxU\/view?usp=sharing","type":"Nage-waza"},
-{"id":"50","name":"Tomoe-nage","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1FMmUpRW8KwsRNwhsPjVbYX4U_1vdof9y\/view?usp=sharing","type":"Nage-waza"},
-{"id":"51","name":"Yoko-tomoe-nage","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1ztOX-Qn_BawALYtQvEp0nJ8UMBB4kmxD\/view?usp=sharing","type":"Nage-waza"},
-{"id":"52","name":"Kuzure-tate-shiho-gatame","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1GnGsbTrIgqPX2ASpOnbks2UI7SjroXo5\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"53","name":"Kata-ha-jime","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/19SJDOmaOcl2OGqabnE3VwmJoAm8UzD7w\/view?usp=sharing","type":"Shime-waza"},
-{"id":"54","name":"Ryote-jime","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/10fL66PnoOhe9DGlJQksvwOmsVfoV2vi1\/view?usp=sharing","type":"Shime-waza"},
-{"id":"55","name":"Kesa-garami","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1yNkJZ_5ob9fowsUVLDvm9T9J_khJo1vE\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"56","name":"Ude-hishigi-ashi-gatame","belt":"green","image_url":"https:\/\/drive.google.com\/file\/d\/1srRQB7RK1dtKcG5HPo-9T7NSlnPlK-pn\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"58","name":"O-guruma","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1gvkoLmlsiK1GzDSQ3aJhRkWxrMKPIFE5\/view?usp=sharing","type":"Nage-waza"},
-{"id":"59","name":"Ashi-guruma","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1DOcNzKdfY4cwk8Frfc82ShdsmO6wjnn3\/view?usp=sharing","type":"Nage-waza"},
-{"id":"60","name":"Sumi-gaeshi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1QcyCvl5ozDIddo64Uy6JBqMyCDY0SywN\/view?usp=sharing","type":"Nage-waza"},
-{"id":"61","name":"Uki-waza","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/11Ufc9pWl_a47g9wzrp7x7FpZRFqrIZCS\/view?usp=sharing","type":"Nage-waza"},
-{"id":"62","name":"Yoko-otoshi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1qkw-4Cy_N6GoUp4LvX1DNqP1-2RPfSmX\/view?usp=sharing","type":"Nage-waza"},
-{"id":"63","name":"Ushiro-goshi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1WnhUwUmg1ab9N8t1EWRT4C54D_VaXmHs\/view?usp=sharing","type":"Nage-waza"},
-{"id":"64","name":"Soto-makikomi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1F8GLo2JTCUa5ZpxYHv-30069NTh2DjbQ\/view?usp=sharing","type":"Nage-waza"},
-{"id":"65","name":"Makura-kesa-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1MO-2R4vi6pbJ72CaLrvn4W3foOvIV1Im\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"66","name":"Sankaku-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1PYPiSlE-w7kWTZWiWQi5Tu0eQ70JUUS8\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"67","name":"Kata-te-jime","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1zJ4D8A4yR_AzzqM1NVP3epeEnyeyZxxE\/view?usp=sharing","type":"Shime-waza"},
-{"id":"68","name":"Sankaku-jime","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/18rH2hpxaznjjB1d8ryi_y0PGYPvZR7Si\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"69","name":"Hara-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1jVBszx9ztGcTarxDyDRjkfUN1rbqA67_\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"70","name":"Waki-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1ItzY1XneAhDoG8VUDNDkw_69Hr1jWmXW\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"71","name":"Hane-goshi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1fLUkAI8pPUoyUbiItFdSKOHb-DlyYPoZ\/view?usp=sharing","type":"Nage-waza"},
-{"id":"72","name":"Tsubame-geashi","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1V0ahp6oSUVPtO52NH9cucA5s37kSUYrz\/view?usp=sharing","type":"Nage-waza"},
-{"id":"73","name":"Ura-nage","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1bRFHSSzqGs55CM2xceWJPCbZje2F06bI\/view?usp=sharing","type":"Nage-waza"},
-{"id":"74","name":"Yoko-guruma","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1qET3l2kLlpfg6UOB1h_LF5H-XmQWINKg\/view?usp=sharing","type":"Nage-waza"},
-{"id":"75","name":"Yoko-gake","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1hUb4hOBuf-ttwfWTQpS3B4uB4AXRkzzo\/view?usp=sharing","type":"Nage-waza"},
-{"id":"76","name":"Kata-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1CEdHmWTfvQDncZhRCZWzF1haarxfMPxk\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"77","name":"Uki-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1OarSJklvbhU9YWpXE9RDeUKGP5O1sBU1\/view?usp=sharing","type":"Osaekomi-waza"},
-{"id":"78","name":"Sode-guruma-jime","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1bOfHH9slVYdfo1O3FtTYoxM257DjHk57\/view?usp=sharing","type":"Shime-waza"},
-{"id":"79","name":"Tsukomi-jime","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/16yJT2JY3JTbkBkgEukBwvOxJ7FbKHKbs\/view?usp=sharing","type":"Shime-waza"},
-{"id":"80","name":"Kannuki-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1kxgRXpPKXiU3frFbpr5y9QvWwKXdo-l4\/view?usp=sharing","type":"Kansetsu-waza"},
-{"id":"81","name":"Hiza-gatame","belt":"blue","image_url":"https:\/\/drive.google.com\/file\/d\/1GiV02hv39KucJXxly6pzGG57wP762Ll2\/view?usp=sharing","type":"Kansetsu-waza"}
-]
-}
+    {
+        "type": "header",
+        "version": "4.8.5",
+        "comment": "Export to JSON plugin for PHPMyAdmin"
+    },
+    {
+        "type": "database",
+        "name": "hzhf7kfMUy"
+    },
+    {
+        "type": "table",
+        "name": "techniques",
+        "database": "hzhf7kfMUy",
+        "data": [
+            {
+                "id": "1",
+                "name": "O-soto-otoshi",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1p3JuGkd533lBv4lrzzUD4BibXy4Jjinz\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "2",
+                "name": "O-uchi-gari",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1APzyii2ibDU82E_OZXilW3fl7_KZMFSr\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "3",
+                "name": "O-goshi",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1V_CtDZUFY3T8Q3Zt4tKqXpBc9YV4G-j-\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "4",
+                "name": "Mune-gatame",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1zoDxMR04Zi6RudTyegS_m39GHNbt49kZ\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "9",
+                "name": "Kuzure-kesa-gatame",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1fcfVAvjw6Ec8J3qnPvPpGVDfck2j5fn8\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "10",
+                "name": "Ko-soto-gari",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1zN2obD93q6xNl2bCpmDYXitb5LwysA7q\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "11",
+                "name": "Ko-uchi-gari",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/13Au37XbZXHxEcvqEbf_yFDhNGN9oCgiD\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "12",
+                "name": "Hiza-guruma",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1_TcaJVLmIha2-q8uh3wa1xHoLxHtx3Tn\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "13",
+                "name": "Eri-seoi-nage",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1sE9ACTQch9nTm_OZN6OQKPk66ZotIA4W\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "14",
+                "name": "Koshi-guruma",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1TkOP0wbnN0CWQ-r8yVUzhDGSzKlD0XEm\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "15",
+                "name": "Kami-shiho-gatame",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1vypc8zfwcNwAYk3CzD2QvPGf2y_8Hdtq\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "16",
+                "name": "Tate-shiho-gatame",
+                "belt": "yellow",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1JOAKswZmPIH2BVMKUHWClvTKsGrQgiOT\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "17",
+                "name": "De-ashi-harai",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1DBMv0FlGz929TKMCaFTR-eiOavaGM5Rb\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "18",
+                "name": "Ko-soto-gake",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1LThq0v77RYY4MMzp4K-lR0k3YkiA8rqO\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "19",
+                "name": "Ippon-seoi-nage",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1TvnUyAXTxeunJF1XflN_yW_dDl2fwRJB\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "20",
+                "name": "Morote-seoi-nage",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1ufSl4n22UXMNQkSqBxbudvHJZLDkwbTr\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "21",
+                "name": "Tsuri-komi-goshi",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1YdF5tioCh0Riz3vPiAkqy7PtdMzgt5Wr\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "22",
+                "name": "Kubi-nage",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/10v5XIdURJXmAFAQC-Mg65RbsFfHPKLWT\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "23",
+                "name": "Ushiro-kesa-gatame",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/16tJ6byvyVvTYA_puG5yVrI9BOT1_jXV9\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "24",
+                "name": "Kuzure-yoko-shiho-gatame",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1FZp0THEJ47OBC-e8RPXPav5mLcDoBSce\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "25",
+                "name": "O-soto-gari",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/10I2O8sPkylJEFHx35z8G30WzSDgY3Yz_\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "26",
+                "name": "Tsuri-goshi",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1WQ7aOMpjwckzlPz3xYRsc0zfvAbp-GYT\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "27",
+                "name": "Tai-otoshi",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1vs7G7rDe5UYdVJO2W0hgN6RM74d1Je33\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "28",
+                "name": "Uchi-mata",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/16XWRbPj2cj4MtNY3pIuJdzChfq2twDNF\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "29",
+                "name": "Harai-goshi",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1zD67DXdh8AqLsdXXuuoiTcU7z0fkn3Gz\/view?usp=sharing",
+                "type": "Nage-Waza"
+            },
+            {
+                "id": "30",
+                "name": "Yoko-shiho-gatame",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1Q8dFGgVE8hRR5gsozj0L1oEuUWlL0g5C\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "31",
+                "name": "Kesa-gatame",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1MZE17XwQBuL4o7XK5FFU-2zX_AP4am-0\/view?usp=sharing",
+                "type": "Osaekomi-Waza"
+            },
+            {
+                "id": "32",
+                "name": "Gyaku-juji-jime",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1cCYo3E84m_vOneQbuLKJcxH6wcTeaNhw\/view?usp=sharing",
+                "type": "Shime-Waza"
+            },
+            {
+                "id": "33",
+                "name": "Nami-juji-jime",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/18ri-ALP525z8eCJLkmF-ZKLtpj7J9OeI\/view?usp=sharing",
+                "type": "Shime-Waza"
+            },
+            {
+                "id": "34",
+                "name": "Kata-juji-jime",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1Iv-GnvYlUJ1F3j0bJY-Mo9Aybk4tkFNO\/view?usp=sharing",
+                "type": "Shime-Waza"
+            },
+            {
+                "id": "35",
+                "name": "Ude-garami",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/12fWDqXD8cyTtrhkA6PmOcV0DvzZfO7Cm\/view?usp=sharing",
+                "type": "Kansetsu-Waza"
+            },
+            {
+                "id": "36",
+                "name": "Juji-gatame",
+                "belt": "orange",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1tiu0rL79egqINJHBa315l_zV2ntpH_FW\/view?usp=sharing",
+                "type": "Kansetsu-Waza"
+            },
+            {
+                "id": "37",
+                "name": "Sasae-tsuri-komi-ashi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1kwT2TrvX7SwrpwmdfzDypJgvqVaeqm3t\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "38",
+                "name": "Sode-tsuri-komi-goshi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1MmwKkINptunQ9EBzxtDoOfUcN1lqQYAP\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "39",
+                "name": "Uki-goshi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1c8WnN3dRwEhf-91ZXy6ziPfac2KEJEO1\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "40",
+                "name": "Seoi-otoshi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/13v1PXsibNJObwqIM2rMtKFfCTID1hmxk\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "41",
+                "name": "Okuri-ashi-harai(barai)",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1ZlpIzCHfWdjMOaensrHgQwbs4Q0E1k9u\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "42",
+                "name": "Kuzure-kami-shiho-gatame",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1NXleroQoEx6eCIrYhaxfp0zlZvWZifTF\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "43",
+                "name": "Hadaka-jime",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1kiW8LleNqjFKSmZQQz57VK-br9e8OIan\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "44",
+                "name": "Okuri-eri-jime",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1_A5eYn96gND_5VLPLjYmW26aPUWWN3-_\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "45",
+                "name": "Ude-gatame",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1gwgXUYF16Ghx_dvpDUeR9Ju-Gk9sSmx4\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "47",
+                "name": "Harai-tsuri-komi-ashi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1P5ZWhRSRFqmzUCp26X5861vCqgzz0ppg\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "48",
+                "name": "Tani-otoshi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1WJrsR3-KaDJVgWKWwxo_j689blTFCuc6\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "49",
+                "name": "Yoko-sumi-gaeshi",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/10u9_f3tn7agWfLKqrZiKMqX1CaHTTzxU\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "50",
+                "name": "Tomoe-nage",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1FMmUpRW8KwsRNwhsPjVbYX4U_1vdof9y\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "51",
+                "name": "Yoko-tomoe-nage",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1ztOX-Qn_BawALYtQvEp0nJ8UMBB4kmxD\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "52",
+                "name": "Kuzure-tate-shiho-gatame",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1GnGsbTrIgqPX2ASpOnbks2UI7SjroXo5\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "53",
+                "name": "Kata-ha-jime",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/19SJDOmaOcl2OGqabnE3VwmJoAm8UzD7w\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "54",
+                "name": "Ryote-jime",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/10fL66PnoOhe9DGlJQksvwOmsVfoV2vi1\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "55",
+                "name": "Kesa-garami",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1yNkJZ_5ob9fowsUVLDvm9T9J_khJo1vE\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "56",
+                "name": "Ude-hishigi-ashi-gatame",
+                "belt": "green",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1srRQB7RK1dtKcG5HPo-9T7NSlnPlK-pn\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "58",
+                "name": "O-guruma",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1gvkoLmlsiK1GzDSQ3aJhRkWxrMKPIFE5\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "59",
+                "name": "Ashi-guruma",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1DOcNzKdfY4cwk8Frfc82ShdsmO6wjnn3\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "60",
+                "name": "Sumi-gaeshi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1QcyCvl5ozDIddo64Uy6JBqMyCDY0SywN\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "61",
+                "name": "Uki-waza",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/11Ufc9pWl_a47g9wzrp7x7FpZRFqrIZCS\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "62",
+                "name": "Yoko-otoshi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1qkw-4Cy_N6GoUp4LvX1DNqP1-2RPfSmX\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "63",
+                "name": "Ushiro-goshi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1WnhUwUmg1ab9N8t1EWRT4C54D_VaXmHs\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "64",
+                "name": "Soto-makikomi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1F8GLo2JTCUa5ZpxYHv-30069NTh2DjbQ\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "65",
+                "name": "Makura-kesa-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1MO-2R4vi6pbJ72CaLrvn4W3foOvIV1Im\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "66",
+                "name": "Sankaku-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1PYPiSlE-w7kWTZWiWQi5Tu0eQ70JUUS8\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "67",
+                "name": "Kata-te-jime",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1zJ4D8A4yR_AzzqM1NVP3epeEnyeyZxxE\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "68",
+                "name": "Sankaku-jime",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/18rH2hpxaznjjB1d8ryi_y0PGYPvZR7Si\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "69",
+                "name": "Hara-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1jVBszx9ztGcTarxDyDRjkfUN1rbqA67_\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "70",
+                "name": "Waki-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1ItzY1XneAhDoG8VUDNDkw_69Hr1jWmXW\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "71",
+                "name": "Hane-goshi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1fLUkAI8pPUoyUbiItFdSKOHb-DlyYPoZ\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "72",
+                "name": "Tsubame-geashi",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1V0ahp6oSUVPtO52NH9cucA5s37kSUYrz\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "73",
+                "name": "Ura-nage",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1bRFHSSzqGs55CM2xceWJPCbZje2F06bI\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "74",
+                "name": "Yoko-guruma",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1qET3l2kLlpfg6UOB1h_LF5H-XmQWINKg\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "75",
+                "name": "Yoko-gake",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1hUb4hOBuf-ttwfWTQpS3B4uB4AXRkzzo\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "76",
+                "name": "Kata-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1CEdHmWTfvQDncZhRCZWzF1haarxfMPxk\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "77",
+                "name": "Uki-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1OarSJklvbhU9YWpXE9RDeUKGP5O1sBU1\/view?usp=sharing",
+                "type": "Osaekomi-waza"
+            },
+            {
+                "id": "78",
+                "name": "Sode-guruma-jime",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1bOfHH9slVYdfo1O3FtTYoxM257DjHk57\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "79",
+                "name": "Tsukomi-jime",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/16yJT2JY3JTbkBkgEukBwvOxJ7FbKHKbs\/view?usp=sharing",
+                "type": "Shime-waza"
+            },
+            {
+                "id": "80",
+                "name": "Kannuki-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1kxgRXpPKXiU3frFbpr5y9QvWwKXdo-l4\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "81",
+                "name": "Hiza-gatame",
+                "belt": "blue",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1GiV02hv39KucJXxly6pzGG57wP762Ll2\/view?usp=sharing",
+                "type": "Kansetsu-waza"
+            },
+            {
+                "id": "82",
+                "name": "Kata-guruma",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1LUpIwkmH63XTynb4yLtZKPjbmaYb5bpo\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "83",
+                "name": "Yoko-wakare",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1TwLqgThhvEtqjukcyNfbEYhKqSSnZ3Ha\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "84",
+                "name": "Sumi-otoshi",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1sfWRSPDm3LQ3NoL_V-UM2SL5CsTQJG_r\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "85",
+                "name": "Uki-otoshi",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1OZMG9avL8sMlcRuN12Mais1C8UZf6_K0\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "86",
+                "name": "O-soto-guruma",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1ToCy6kbZOo1BDprVsqsTseOqtTYvE_9Z\/view?usp=sharing",
+                "type": "Nage-waza"
+            },
+            {
+                "id": "87",
+                "name": "Utsuri-gosh",
+                "belt": "brown",
+                "image_url": "https:\/\/drive.google.com\/file\/d\/1IudtIOUYl9cbUY6316j9o7Jn9Ehu3Scz\/view?usp=sharing",
+                "type": "Nage-waza"
+            }
+        ]
+    }
 ]
