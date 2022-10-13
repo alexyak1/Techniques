@@ -24,13 +24,6 @@ func initDB() {
 	config :=
 		database.Config{}
 	if db_password != "" {
-		// config =
-		// 	database.Config{
-		// 		ServerName: "remotemysql.com",
-		// 		User:       "freedb_alexyak1",
-		// 		Hash:       db_password,
-		// 		DB:         "hzhf7kfMUy",
-		// 	}
 		config =
 			database.Config{
 				ServerName: "sql.freedb.tech",
