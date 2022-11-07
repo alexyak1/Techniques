@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"main/database"
 	"main/entity"
-	"math/rand"
 	"net/http"
 	"strconv"
 
@@ -78,28 +76,4 @@ func UpdateTechniqueById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(technique)
-}
-
-//Function just for play with tests
-func Hello(name string) (string, error) {
-	// If no name was given, return an error with a message.
-	if name == "" {
-		return name, errors.New("empty name")
-	}
-	// Create a message using a random format.
-	message := fmt.Sprintf(randomFormat(), name)
-	return message, nil
-}
-
-//Function just for play with tests
-func randomFormat() string {
-	// A slice of message formats.
-	formats := []string{
-		"Hi, %v. Welcome!",
-		"Great to see you, %v!",
-		"Hail, %v! Well met!",
-	}
-
-	// Return one of the message formats selected at random.
-	return formats[rand.Intn(len(formats))]
 }
