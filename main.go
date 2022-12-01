@@ -63,6 +63,9 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
 	myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
+
+	myRouter.HandleFunc("/blog", controllers.GetBlogData)
+
 	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
