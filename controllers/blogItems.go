@@ -21,10 +21,6 @@ func GetBlogData(w http.ResponseWriter, r *http.Request) {
 func GetBlogDataRawQuery(w http.ResponseWriter, r *http.Request) {
 	var blogItems []entity.BlogItem
 
-	// only blog_items
-	// database.Connector.Find(&blogItems)
-
-	// TODO: was bad connection need to test with join
 	// With join to pool answers
 	database.Connector.Joins("JOIN blog_pool_answers on blog_pool_answers.blog_item_id = blog_items.id").Find(&blogItems)
 
