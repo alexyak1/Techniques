@@ -17,6 +17,7 @@ jobs:
     steps:
      # Step 1
       - name: all-fine
+        run: go version 
     #     uses: aws-actions/configure-aws-credentials@v1
     #     with:
     #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
