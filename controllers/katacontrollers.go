@@ -17,6 +17,8 @@ func GetAllKataTechniques(w http.ResponseWriter, r *http.Request) {
 
 	if kataName, ok := r.URL.Query()["name"]; ok {
 		database.Connector.Where("kata_name = ?", kataName).Find(&kataTechniques)
+	} else if serie_name, ok := r.URL.Query()["type"]; ok {
+		database.Connector.Where("type = ?", serie_name).Find(&kataTechniques)
 	} else {
 		database.Connector.Find(&kataTechniques)
 	}
