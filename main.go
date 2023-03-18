@@ -21,10 +21,9 @@ func main() {
 
 func initDB() {
 	db_password := os.Getenv("DB_PASSWORD")
-	config :=
-		database.Config{}
+	config := &database.Config{}
 	if db_password != "" {
-		config =
+		*config =
 			database.Config{
 				ServerName: "sql.freedb.tech",
 				User:       "freedb_alexyak1",
@@ -32,7 +31,7 @@ func initDB() {
 				DB:         "freedb_techniques",
 			}
 	} else {
-		config =
+		*config =
 			database.Config{
 				ServerName: "godockerDB",
 				User:       "root",
@@ -40,7 +39,7 @@ func initDB() {
 				DB:         "techniques",
 			}
 	}
-	connectionString := database.GetConnectionString(config)
+	connectionString := database.GetConnectionString(*config)
 	err := database.Connect(connectionString)
 	if err != nil {
 		fmt.Printf("Connection problem to SQL. ")
@@ -63,6 +62,10 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/techniques", controllers.GetAllTechniques)
 	myRouter.HandleFunc("/technique/{id}", controllers.GetTechniqueById)
+
+	// Kata techniques
+	myRouter.HandleFunc("/kata", controllers.CreateKataTechnique).Methods("POST")
+	myRouter.HandleFunc("/kata", controllers.GetAllKataTechniques)
 
 	myRouter.HandleFunc("/blog", controllers.GetBlogData)
 
