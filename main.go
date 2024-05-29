@@ -1,11 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"main/controllers"
-	"main/database"
-	"main/entity"
 	"net/http"
 	"os"
 
@@ -50,11 +49,20 @@ func initDB() {
 	// Construct the connection string
 	connectionString := fmt.Sprintf("%s:%s@unix(%s/%s)/%s", user, password, socketDir, connectionName, databaseName)
 
-	err := database.Connect(connectionString)
+	// Connect to the database using the connection string
+	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
-		fmt.Printf("Connection problem to SQL. ")
+		log.Fatalf("Error connecting to the database: %v", err)
 	}
-	database.Migrate(&entity.Technique{})
+	defer db.Close()
+
+	// Ping the database to check the connection
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("Error pinging the database: %v", err)
+	}
+
+	fmt.Println("Connected to the database!")
 }
 
 func handleRequests() {
