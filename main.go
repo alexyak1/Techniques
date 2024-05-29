@@ -20,25 +20,25 @@ func main() {
 }
 
 func initDB() {
-	// db_password := os.Getenv("DB_PASSWORD")
+	db_password := os.Getenv("DB_PASSWORD")
 	config := &database.Config{}
-	// if db_password != "" {
-	// 	*config =
-	// 		database.Config{
-	// 			ServerName: "sql.freedb.tech",
-	// 			User:       "freedb_alexyak1",
-	// 			Hash:       db_password,
-	// 			DB:         "freedb_techniques",
-	// 		}
-	// } else {
-	*config =
-		database.Config{
-			ServerName: "godockerDB",
-			User:       "root",
-			Hash:       "judo-test-password",
-			DB:         "techniques",
-		}
-	// }
+	if db_password != "" {
+		*config =
+			database.Config{
+				ServerName: "sql.freedb.tech",
+				User:       "freedb_alexyak1",
+				Hash:       db_password,
+				DB:         "freedb_techniques",
+			}
+	} else {
+		*config =
+			database.Config{
+				ServerName: "godockerDB",
+				User:       "root",
+				Hash:       "judo-test-password",
+				DB:         "techniques",
+			}
+	}
 	connectionString := database.GetConnectionString(*config)
 	err := database.Connect(connectionString)
 	if err != nil {
