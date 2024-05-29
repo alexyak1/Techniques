@@ -20,26 +20,36 @@ func main() {
 }
 
 func initDB() {
-	db_password := os.Getenv("DB_PASSWORD")
-	config := &database.Config{}
-	if db_password != "" {
-		*config =
-			database.Config{
-				ServerName: "34.88.169.215",
-				User:       "kano",
-				Hash:       "workwork",
-				DB:         "techniques",
-			}
-	} else {
-		*config =
-			database.Config{
-				ServerName: "godockerDB",
-				User:       "root",
-				Hash:       "judo-test-password",
-				DB:         "techniques",
-			}
-	}
-	connectionString := database.GetConnectionString(*config)
+	// db_password := os.Getenv("DB_PASSWORD")
+	// config := &database.Config{}
+	// if db_password != "" {
+	// 	*config =
+	// 		database.Config{
+	// 			ServerName: "34.88.169.215",
+	// 			User:       "kano",
+	// 			Hash:       "workwork",
+	// 			DB:         "techniques",
+	// 		}
+	// } else {
+	// 	*config =
+	// 		database.Config{
+	// 			ServerName: "godockerDB",
+	// 			User:       "root",
+	// 			Hash:       "judo-test-password",
+	// 			DB:         "techniques",
+	// 		}
+	// }
+	// connectionString := database.GetConnectionString(*config)
+
+	connectionName := "concrete-plasma-424808-a7:europe-north1:kano"
+	user := "kano"
+	password := "workwork"
+	databaseName := "techniques"
+	socketDir := "/cloudsql"
+
+	// Construct the connection string
+	connectionString := fmt.Sprintf("%s:%s@unix(%s/%s)/%s", user, password, socketDir, connectionName, databaseName)
+
 	err := database.Connect(connectionString)
 	if err != nil {
 		fmt.Printf("Connection problem to SQL. ")
