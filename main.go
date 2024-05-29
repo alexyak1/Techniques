@@ -25,10 +25,10 @@ func initDB() {
 	if db_password != "" {
 		*config =
 			database.Config{
-				ServerName: "sql.freedb.tech",
-				User:       "freedb_alexyak1",
-				Hash:       db_password,
-				DB:         "freedb_techniques",
+				ServerName: "34.88.169.215",
+				User:       "kano",
+				Hash:       "workwork",
+				DB:         "techniques",
 			}
 	} else {
 		*config =
