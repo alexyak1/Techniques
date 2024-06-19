@@ -20,6 +20,7 @@ require (
 	github.com/liudanking/goutil v0.0.0-20211122055725-7ad7ea12639e // indirect
 	github.com/pinzolo/casee v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rs/cors v1.11.0
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/urfave/cli v1.22.10 // indirect

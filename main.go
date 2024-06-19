@@ -9,9 +9,8 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -23,21 +22,19 @@ func initDB() {
 	db_password := os.Getenv("DB_PASSWORD")
 	config := &database.Config{}
 	if db_password != "" {
-		*config =
-			database.Config{
-				ServerName: "sql.freedb.tech",
-				User:       "freedb_alexyak1",
-				Hash:       db_password,
-				DB:         "freedb_techniques",
-			}
+		*config = database.Config{
+			ServerName: "sql.freedb.tech",
+			User:       "freedb_alexyak1",
+			Hash:       db_password,
+			DB:         "freedb_techniques",
+		}
 	} else {
-		*config =
-			database.Config{
-				ServerName: "godockerDB",
-				User:       "root",
-				Hash:       "judo-test-password",
-				DB:         "techniques",
-			}
+		*config = database.Config{
+			ServerName: "godockerDB",
+			User:       "root",
+			Hash:       "judo-test-password",
+			DB:         "techniques",
+		}
 	}
 	connectionString := database.GetConnectionString(*config)
 	err := database.Connect(connectionString)
@@ -49,13 +46,13 @@ func initDB() {
 
 func handleRequests() {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		port = "8787"
 	}
 	fmt.Println(port)
 
 	myRouter := mux.NewRouter().StrictSlash(true)
+	myRouter.HandleFunc("/techniques", controllers.GetAllTechniques).Methods("GET")
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
 	myRouter.HandleFunc("/technique/{id}", controllers.DeleteTechniqueById).Methods("DELETE")
 	myRouter.HandleFunc("/technique/{id}", controllers.UpdateTechniqueById).Methods("PUT")
@@ -69,7 +66,17 @@ func handleRequests() {
 
 	myRouter.HandleFunc("/blog", controllers.GetBlogData)
 
-	log.Fatal(http.ListenAndServe(":"+port, myRouter))
+	// CORS middleware configuration
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{"https://www.judoquiz.com"}, // Adjust this to your frontend URL
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	})
+
+	// Use the CORS middleware with your router
+	handler := corsHandler.Handler(myRouter)
+
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
