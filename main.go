@@ -69,13 +69,7 @@ func handleRequests() {
 
 	myRouter.HandleFunc("/blog", controllers.GetBlogData)
 
-	tlsConfig := &http.Server{
-		Addr:    ":" + port,
-		Handler: myRouter,
-	}
-
-	// Use SSL certificates from mounted volumes
-	log.Fatal(tlsConfig.ListenAndServeTLS("/etc/ssl/certs/fullchain.pem", "/etc/ssl/private/privkey.pem"))
+	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
