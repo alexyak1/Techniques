@@ -14,7 +14,7 @@ services:
   web:
     build: .
     ports:
-      - 8787:8787
+      - "8787:8787"
     depends_on:
       - database
     environment:
@@ -23,8 +23,8 @@ services:
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
     volumes:
-      - /path/to/fullchain.pem:/etc/ssl/certs/fullchain.pem
-      - /path/to/privkey.pem:/etc/ssl/private/privkey.pem
+      - /etc/letsencrypt/live/judoquiz.com/fullchain.pem:/etc/ssl/certs/fullchain.pem
+      - /etc/letsencrypt/live/judoquiz.com/privkey.pem:/etc/ssl/private/privkey.pem
 
 volumes:
   mysql:
