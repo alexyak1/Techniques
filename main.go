@@ -69,19 +69,16 @@ func handleRequests() {
 
 	myRouter.HandleFunc("/blog", controllers.GetBlogData)
 
-	log.Fatal(http.ListenAndServe(":"+port, myRouter))
+	tlsConfig := &http.Server{
+		Addr:    ":" + port,
+		Handler: myRouter,
+	}
+
+	// Use SSL certificates from mounted volumes
+	log.Fatal(tlsConfig.ListenAndServeTLS("/etc/ssl/certs/fullchain.pem", "/etc/ssl/private/privkey.pem"))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	port := os.Getenv("PORT")
-
-	if port == "" {
-		port = "8787"
-	}
-	fmt.Println(port)
-
-	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo tecniques! ")
-	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n IP:"+port+"/techniques")
-
-	fmt.Println("Endpoint Hit: homePage")
+	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo techniques! ")
+	fmt.Fprintf(w, "\nTo get all techniques, visit this endpoint: /techniques")
 }
