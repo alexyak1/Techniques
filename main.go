@@ -49,11 +49,12 @@ func initDB() {
 
 func handleRequests() {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		port = "8787"
 	}
 	fmt.Println(port)
+	certFile := "/etc/letsencrypt/live/judoquiz.com/fullchain.pem"
+	keyFile := "/etc/letsencrypt/live/judoquiz.com/privkey.pem"
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
@@ -69,19 +70,17 @@ func handleRequests() {
 
 	myRouter.HandleFunc("/blog", controllers.GetBlogData)
 
-	log.Fatal(http.ListenAndServe(":"+port, myRouter))
+	log.Fatal(http.ListenAndServeTLS(":"+port, certFile, keyFile, myRouter))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		port = "8787"
 	}
-	fmt.Println(port)
 
-	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo tecniques! ")
-	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n http://18.221.140.18:"+port+"/techniques")
+	fmt.Fprintf(w, "Hi judoka!\nWelcome to the HomePage of judo techniques! ")
+	fmt.Fprintf(w, "\nFor get all techniques visit this endpoint:\n IP:"+port+"/techniques")
 
 	fmt.Println("Endpoint Hit: homePage")
 }
