@@ -53,8 +53,6 @@ func handleRequests() {
 		port = "8787"
 	}
 	fmt.Println(port)
-	certFile := "/etc/letsencrypt/live/judoquiz.com/fullchain.pem"
-	keyFile := "/etc/letsencrypt/live/judoquiz.com/privkey.pem"
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
