@@ -180,6 +180,24 @@ INSERT INTO `techniques` (`id`, `name`, `belt`, `image_url`, `type`, `image_id`)
 (86, 'Yoko-wakare', 'brown', 'https://drive.google.com/file/d/1TwLqgThhvEtqjukcyNfbEYhKqSSnZ3Ha/view?usp=sharing', 'Nage-waza', '1TwLqgThhvEtqjukcyNfbEYhKqSSnZ3Ha'),
 (87, 'Kata-guruma', 'brown', 'https://drive.google.com/file/d/1LUpIwkmH63XTynb4yLtZKPjbmaYb5bpo/view?usp=sharing', 'Nage-waza', '1LUpIwkmH63XTynb4yLtZKPjbmaYb5bpo');
 
+
+
+INSERT INTO `kata_techniques` (`id`, `name`, `kata_name`, `image_url`, `type`, `image_id`) VALUES
+(1, 'Uki-otoshi', 'nage-no-kata', '', 'Te-waza', ''),
+(2, 'Uki-goshi', 'nage-no-kata', '', 'Te-waza', ''),
+(3, 'Kata-guruma', 'nage-no-kata', '', 'Te-waza', ''),
+(4, 'Uki-goshi', 'nage-no-kata', '', 'Koshi-waza', ''),
+(5, 'Harai-goshi', 'nage-no-kata', '', 'Koshi-waza', ''),
+(6, 'Tsurikomi-goshi', 'nage-no-kata', '', 'Koshi-waza', ''),
+(7, 'Okuri-ashi-harai', 'nage-no-kata', '', 'Ashi-Waza', ''),
+(8, 'Sasae-tsurikomi-ashi', 'nage-no-kata', '', 'Ashi-Waza', ''),
+(9, 'Uchi-mata', 'nage-no-kata', '', 'Ashi-Waza', ''),
+(10, 'Tomoe-nage', 'nage-no-kata', '', 'Masutemi-Waza', ''),
+(11, 'Ura-nage', 'nage-no-kata', '', 'Masutemi-Waza', ''),
+(12, 'Sumi-gaeshi', 'nage-no-kata', '', 'Masutemi-Waza', ''),
+(13, 'Yoko-gake', 'nage-no-kata', '', 'Yoko-stemi-Waza', ''),
+(14, 'Yoko-guruma', 'nage-no-kata', '', 'Yoko-stemi-Waza', ''),
+(16, 'Uki-waza', 'nage-no-kata', '', 'Yoko-stemi-Waza', '');
 --
 -- Индексы сохранённых таблиц
 --
