@@ -184,7 +184,7 @@ INSERT INTO `techniques` (`id`, `name`, `belt`, `image_url`, `type`, `image_id`)
 
 INSERT INTO `kata_techniques` (`id`, `name`, `kata_name`, `image_url`, `type`, `image_id`) VALUES
 (1, 'Uki-otoshi', 'nage-no-kata', '', 'Te-waza', ''),
-(2, 'Uki-goshi', 'nage-no-kata', '', 'Te-waza', ''),
+(2, 'Seoi-nage', 'nage-no-kata', '', 'Te-waza', ''),
 (3, 'Kata-guruma', 'nage-no-kata', '', 'Te-waza', ''),
 (4, 'Uki-goshi', 'nage-no-kata', '', 'Koshi-waza', ''),
 (5, 'Harai-goshi', 'nage-no-kata', '', 'Koshi-waza', ''),
