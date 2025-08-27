@@ -42,8 +42,8 @@ func initDB() {
 		return
 	}
 
-	// Run migration to ensure the DB schema is up to date
-	database.Migrate(&entity.Technique{})
+	// Run migrations to ensure the DB schema is up to date
+	database.Migrate(&entity.Technique{}, &entity.KataTechnique{}, &entity.BlogItem{})
 }
 
 func handleRequests() {

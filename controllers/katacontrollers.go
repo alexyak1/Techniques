@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"main/database"
 	"main/entity"
 	"net/http"
@@ -15,13 +13,28 @@ import (
 func GetAllKataTechniques(w http.ResponseWriter, r *http.Request) {
 	kataTechniques := []entity.KataTechnique{}
 
-	if kataName, ok := r.URL.Query()["name"]; ok {
-		database.Connector.Where("kata_name = ?", kataName).Find(&kataTechniques)
-	} else if serie_name, ok := r.URL.Query()["type"]; ok {
-		database.Connector.Where("type = ?", serie_name).Find(&kataTechniques)
-	} else {
-		database.Connector.Find(&kataTechniques)
+	query := r.URL.Query()
+	limit := 50
+	offset := 0
+	if v := query.Get("limit"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 && n <= 200 {
+			limit = n
+		}
 	}
+	if v := query.Get("offset"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n >= 0 {
+			offset = n
+		}
+	}
+
+	dbq := database.Connector.Limit(limit).Offset(offset)
+	if kataName := query.Get("name"); kataName != "" {
+		dbq = dbq.Where("kata_name = ?", kataName)
+	}
+	if serieName := query.Get("type"); serieName != "" {
+		dbq = dbq.Where("type = ?", serieName)
+	}
+	dbq.Find(&kataTechniques)
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
@@ -41,17 +54,18 @@ func GetKataTechniqueById(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateKataTechnique(w http.ResponseWriter, r *http.Request) {
-	requestBody, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	kataTechnique := entity.KataTechnique{}
-	json.Unmarshal(requestBody, &kataTechnique)
+	if err := json.NewDecoder(r.Body).Decode(&kataTechnique); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	query := fmt.Sprintf(
-		"INSERT INTO kata_techniques (name, kata_name, image_url, type, image_id) "+
-			"VALUES ('%s', '%s', '%s', '%s', '%s');",
-		kataTechnique.Name, kataTechnique.KataName, kataTechnique.ImageURL, kataTechnique.Type, kataTechnique.ImageId,
-	)
+	if err := database.Connector.Create(&kataTechnique).Error; err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	database.Connector.DB().QueryRow(query)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -69,10 +83,13 @@ func DeleteKataTechniqueById(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateKataTechniqueById(w http.ResponseWriter, r *http.Request) {
-	requestBody, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	kataTechnique := entity.KataTechnique{}
 
-	json.Unmarshal(requestBody, &kataTechnique)
+	if err := json.NewDecoder(r.Body).Decode(&kataTechnique); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	database.Connector.Save(&kataTechnique)
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")

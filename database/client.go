@@ -2,7 +2,7 @@ package database
 
 import (
 	"log"
-	"main/entity"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -16,11 +16,17 @@ func Connect(connectionString string) error {
 		return err
 	}
 
+	// Tune connection pool to reduce unnecessary work
+	sqlDB := Connector.DB()
+	sqlDB.SetMaxOpenConns(20)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+
 	log.Println("Connection success")
 	return nil
 }
 
-func Migrate(table *entity.Technique) {
-	Connector.AutoMigrate(&table)
-	log.Println("Table migrated")
+func Migrate(models ...interface{}) {
+	Connector.AutoMigrate(models...)
+	log.Println("Tables migrated")
 }
