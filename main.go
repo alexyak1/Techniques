@@ -72,9 +72,6 @@ func handleRequests() {
 	myRouter.HandleFunc("/kata", controllers.CreateKataTechnique).Methods("POST")
 	myRouter.HandleFunc("/kata", controllers.GetAllKataTechniques)
 
-	// Blog route
-	myRouter.HandleFunc("/blog", controllers.GetBlogData)
-
 	// Start the server
 	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
