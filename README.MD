@@ -43,3 +43,11 @@
 }
 ```
  - Delete technique: DELETE `localhost:8787/technique/{id}`
+
+
+### Domain
+Squarespace
+
+### Deploed
+
+Hetzner Cloud
