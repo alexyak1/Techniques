@@ -1,5 +1,5 @@
 ## Specify the base image for go app
-FROM golang:1.16-alpine
+FROM golang:1.19-alpine
 
 ## Create /app directory with image that will hold app soursce files
 RUN mkdir /app

@@ -1,18 +1,64 @@
 package main
 
 import (
+	"compress/gzip"
 	"fmt"
+	"io"
 	"log"
 	"main/controllers"
 	"main/database"
 	"main/entity"
 	"net/http"
 	"os"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
+
+// gzipResponseWriter wraps http.ResponseWriter to provide gzip compression
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
+
+// gzipMiddleware compresses responses with gzip if the client supports it
+func gzipMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Check if client accepts gzip
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Set gzip headers
+		w.Header().Set("Content-Encoding", "gzip")
+		w.Header().Del("Content-Length") // Content length changes with compression
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+
+		gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+		next.ServeHTTP(gzw, r)
+	})
+}
+
+// cacheMiddleware adds Cache-Control headers to GET responses
+func cacheMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Only cache GET requests
+		if r.Method == http.MethodGet {
+			// Cache for 5 minutes, allow stale content while revalidating
+			w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=60")
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	initDB()
@@ -43,7 +89,10 @@ func initDB() {
 	}
 
 	// Run migration to ensure the DB schema is up to date
-	database.Migrate(&entity.Technique{})
+	if err := database.Migrate(&entity.Technique{}); err != nil {
+		fmt.Printf("Migration failed: %v\n", err)
+		return
+	}
 }
 
 func handleRequests() {
@@ -72,8 +121,11 @@ func handleRequests() {
 	myRouter.HandleFunc("/kata", controllers.CreateKataTechnique).Methods("POST")
 	myRouter.HandleFunc("/kata", controllers.GetAllKataTechniques)
 
+	// Apply middleware: gzip compression + cache headers
+	handler := gzipMiddleware(cacheMiddleware(myRouter))
+
 	// Start the server
-	log.Fatal(http.ListenAndServe(":"+port, myRouter))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
