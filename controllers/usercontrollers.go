@@ -293,8 +293,8 @@ func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if req.Name == "" || req.Date == "" || len(req.StudentIDs) == 0 {
-		http.Error(w, `{"error":"Name, date, and at least one student are required"}`, http.StatusBadRequest)
+	if req.Name == "" || req.Date == "" {
+		http.Error(w, `{"error":"Name and date are required"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -508,11 +508,14 @@ func CoachRemoveStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := database.Connector.Where("coach_id = ? AND student_id = ?", coachID, studentID).Delete(&entity.CoachStudent{})
-	if result.Error != nil {
-		http.Error(w, `{"error":"Failed to remove student"}`, http.StatusInternalServerError)
-		return
-	}
+	// Remove coach-student association
+	database.Connector.Where("coach_id = ? AND student_id = ?", coachID, studentID).Delete(&entity.CoachStudent{})
+
+	// Remove student from club
+	database.Connector.Model(&entity.User{}).Where("id = ?", studentID).Updates(map[string]interface{}{
+		"club_id":     nil,
+		"club_status": "",
+	})
 
 	w.WriteHeader(http.StatusNoContent)
 }
