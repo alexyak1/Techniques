@@ -344,6 +344,16 @@ func UpdateCompetitionCategory(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(comp)
 }
 
+func DeleteCompetitionEntry(w http.ResponseWriter, r *http.Request) {
+	compID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid competition ID"}`, http.StatusBadRequest)
+		return
+	}
+	database.Connector.Where("id = ?", compID).Delete(&entity.Competition{})
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func UpdateCompetitionResult(w http.ResponseWriter, r *http.Request) {
 	compID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
@@ -857,9 +867,11 @@ func GetClubCoaches(w http.ResponseWriter, r *http.Request) {
 	var coaches []entity.User
 	if clubID != nil {
 		if role == "admin" {
-			database.Connector.Where("club_id = ? AND club_status = ? AND (role = ? OR role = ?)", *clubID, "approved", "coach", "admin").Find(&coaches)
+			database.Connector.Where("club_id = ? AND club_status = ? AND (role = ? OR role = ?)", *clubID, "approved", "coach", "admin").
+				Preload("Belts").Preload("Competitions").Preload("Club").Find(&coaches)
 		} else {
-			database.Connector.Where("club_id = ? AND club_status = ? AND role = ?", *clubID, "approved", "coach").Find(&coaches)
+			database.Connector.Where("club_id = ? AND club_status = ? AND role = ?", *clubID, "approved", "coach").
+				Preload("Belts").Preload("Competitions").Preload("Club").Find(&coaches)
 		}
 	}
 	if coaches == nil {

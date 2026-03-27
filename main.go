@@ -206,6 +206,7 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/competitions", controllers.CreateCoachCompetition).Methods("POST")
 	coachRoutes.HandleFunc("/competitions/{id}/result", controllers.UpdateCompetitionResult).Methods("PUT")
 	coachRoutes.HandleFunc("/competitions/{id}/category", controllers.UpdateCompetitionCategory).Methods("PUT")
+	coachRoutes.HandleFunc("/competitions/{id}", controllers.DeleteCompetitionEntry).Methods("DELETE")
 	coachRoutes.HandleFunc("/students/{id}/belts", controllers.CoachAddBelt).Methods("POST")
 	coachRoutes.HandleFunc("/students/{id}/belts/{beltId}", controllers.CoachDeleteBelt).Methods("DELETE")
 	coachRoutes.HandleFunc("/students/{id}/competitions", controllers.CoachAddCompetition).Methods("POST")
