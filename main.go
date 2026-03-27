@@ -8,6 +8,7 @@ import (
 	"main/controllers"
 	"main/database"
 	"main/entity"
+	"main/middleware"
 	"net/http"
 	"os"
 	"strings"
@@ -15,6 +16,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/rs/cors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // gzipResponseWriter wraps http.ResponseWriter to provide gzip compression
@@ -51,10 +54,16 @@ func gzipMiddleware(next http.Handler) http.Handler {
 // cacheMiddleware adds Cache-Control headers to GET responses
 func cacheMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Only cache GET requests
 		if r.Method == http.MethodGet {
-			// Cache for 5 minutes, allow stale content while revalidating
-			w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=60")
+			// Don't cache authenticated/user-specific responses
+			if strings.HasPrefix(r.URL.Path, "/auth/") ||
+				strings.HasPrefix(r.URL.Path, "/user/") ||
+				strings.HasPrefix(r.URL.Path, "/coach/") ||
+				strings.HasPrefix(r.URL.Path, "/admin/") {
+				w.Header().Set("Cache-Control", "no-store")
+			} else {
+				w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=60")
+			}
 		}
 		next.ServeHTTP(w, r)
 	})
@@ -66,11 +75,19 @@ func main() {
 }
 
 func initDB() {
-	// Always use the Docker database container and credentials
-	dbHost := "godockerDB"             // Docker service name
-	dbUser := "root"                   // User for MySQL
-	dbPassword := "judo-test-password" // Password for MySQL
-	dbName := "techniques"             // Database name
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	if dbHost == "" {
+		dbHost = "godockerDB"
+	}
+	if dbUser == "" {
+		dbUser = "root"
+	}
+	if dbName == "" {
+		dbName = "techniques"
+	}
 
 	// Set up the database configuration
 	config := &database.Config{
@@ -93,6 +110,39 @@ func initDB() {
 		fmt.Printf("Migration failed: %v\n", err)
 		return
 	}
+
+	// Migrate new auth tables
+	database.Connector.AutoMigrate(
+		&entity.Club{},
+		&entity.User{},
+		&entity.Belt{},
+		&entity.Competition{},
+		&entity.QuizResult{},
+		&entity.CoachStudent{},
+		&entity.VerificationToken{},
+	)
+
+	// Seed default admin if none exists
+	var count int
+	database.Connector.Model(&entity.User{}).Where("role = ?", "admin").Count(&count)
+	if count == 0 {
+		adminEmail := os.Getenv("ADMIN_EMAIL")
+		adminPass := os.Getenv("ADMIN_PASSWORD")
+		if adminEmail == "" || adminPass == "" {
+			log.Println("ADMIN_EMAIL and ADMIN_PASSWORD env vars required to create admin")
+			return
+		}
+		hash, _ := bcrypt.GenerateFromPassword([]byte(adminPass), bcrypt.DefaultCost)
+		admin := entity.User{
+			Email:         adminEmail,
+			PasswordHash:  string(hash),
+			Name:          "Admin",
+			Role:          "admin",
+			EmailVerified: true,
+		}
+		database.Connector.Create(&admin)
+		log.Printf("Default admin created: %s", adminEmail)
+	}
 }
 
 func handleRequests() {
@@ -109,7 +159,7 @@ func handleRequests() {
 	// Create a new router
 	myRouter := mux.NewRouter().StrictSlash(true)
 
-	// Define routes
+	// Existing public routes
 	myRouter.HandleFunc("/technique", controllers.CreateTechnique).Methods("POST")
 	myRouter.HandleFunc("/technique/{id}", controllers.DeleteTechniqueById).Methods("DELETE")
 	myRouter.HandleFunc("/technique/{id}", controllers.UpdateTechniqueById).Methods("PUT")
@@ -121,8 +171,86 @@ func handleRequests() {
 	myRouter.HandleFunc("/kata", controllers.CreateKataTechnique).Methods("POST")
 	myRouter.HandleFunc("/kata", controllers.GetAllKataTechniques)
 
-	// Apply middleware: gzip compression + cache headers
-	handler := gzipMiddleware(cacheMiddleware(myRouter))
+	// Public auth routes
+	myRouter.HandleFunc("/auth/register", controllers.Register).Methods("POST")
+	myRouter.HandleFunc("/auth/login", controllers.Login).Methods("POST")
+	myRouter.HandleFunc("/auth/verify-email", controllers.VerifyEmail).Methods("GET")
+	myRouter.HandleFunc("/auth/resend-verification", controllers.ResendVerification).Methods("POST")
+	myRouter.HandleFunc("/auth/confirm-password", controllers.ConfirmPasswordChange).Methods("GET")
+	myRouter.HandleFunc("/auth/forgot-password", controllers.ForgotPassword).Methods("POST")
+	myRouter.HandleFunc("/auth/reset-password", controllers.ResetPassword).Methods("POST")
+
+	// Protected routes - any authenticated user
+	protected := myRouter.PathPrefix("").Subrouter()
+	protected.Use(middleware.AuthMiddleware)
+	protected.HandleFunc("/auth/me", controllers.GetMe).Methods("GET")
+	protected.HandleFunc("/user/clubs", controllers.GetAllClubsForUser).Methods("GET")
+	protected.HandleFunc("/user/join-club", controllers.UserJoinClub).Methods("POST")
+	protected.HandleFunc("/user/leave-club", controllers.UserLeaveClub).Methods("POST")
+	protected.HandleFunc("/user/profile", controllers.UpdateProfile).Methods("PUT")
+	protected.HandleFunc("/user/change-password", controllers.RequestPasswordChange).Methods("PUT")
+	protected.HandleFunc("/user/upload-photo", controllers.UploadPhoto).Methods("POST")
+	protected.HandleFunc("/user/belts", controllers.AddBelt).Methods("POST")
+	protected.HandleFunc("/user/belts/{id}", controllers.DeleteBelt).Methods("DELETE")
+	protected.HandleFunc("/user/competitions", controllers.AddCompetition).Methods("POST")
+	protected.HandleFunc("/user/competitions/{id}", controllers.DeleteCompetition).Methods("DELETE")
+	protected.HandleFunc("/user/quiz-results", controllers.SaveQuizResult).Methods("POST")
+	protected.HandleFunc("/user/quiz-results", controllers.GetUserQuizResults).Methods("GET")
+
+	// Coach + Admin routes
+	coachRoutes := myRouter.PathPrefix("/coach").Subrouter()
+	coachRoutes.Use(middleware.AuthMiddleware)
+	coachRoutes.Use(middleware.RequireRole("coach", "admin"))
+	coachRoutes.HandleFunc("/students", controllers.GetStudents).Methods("GET")
+	coachRoutes.HandleFunc("/students/{id}", controllers.GetStudentProfile).Methods("GET")
+	coachRoutes.HandleFunc("/competitions", controllers.CreateCoachCompetition).Methods("POST")
+	coachRoutes.HandleFunc("/competitions/{id}/result", controllers.UpdateCompetitionResult).Methods("PUT")
+	coachRoutes.HandleFunc("/competitions/{id}/category", controllers.UpdateCompetitionCategory).Methods("PUT")
+	coachRoutes.HandleFunc("/students/{id}/belts", controllers.CoachAddBelt).Methods("POST")
+	coachRoutes.HandleFunc("/students/{id}/belts/{beltId}", controllers.CoachDeleteBelt).Methods("DELETE")
+	coachRoutes.HandleFunc("/students/{id}/competitions", controllers.CoachAddCompetition).Methods("POST")
+	coachRoutes.HandleFunc("/students/{id}/competitions/{compId}", controllers.CoachDeleteCompetition).Methods("DELETE")
+	coachRoutes.HandleFunc("/students/{id}/profile", controllers.CoachUpdateStudentProfile).Methods("PUT")
+	coachRoutes.HandleFunc("/available-students", controllers.GetAvailableStudents).Methods("GET")
+	coachRoutes.HandleFunc("/add-student", controllers.CoachAddStudent).Methods("POST")
+	coachRoutes.HandleFunc("/create-student", controllers.CoachCreateStudent).Methods("POST")
+	coachRoutes.HandleFunc("/remove-student/{id}", controllers.CoachRemoveStudent).Methods("DELETE")
+	coachRoutes.HandleFunc("/club-coaches", controllers.GetClubCoaches).Methods("GET")
+	coachRoutes.HandleFunc("/club-coaches/{id}", controllers.GetCoachProfile).Methods("GET")
+	coachRoutes.HandleFunc("/clubs", controllers.GetAllClubsPublic).Methods("GET")
+	coachRoutes.HandleFunc("/create-club", controllers.CoachCreateClub).Methods("POST")
+	coachRoutes.HandleFunc("/join-club", controllers.CoachJoinClub).Methods("POST")
+	coachRoutes.HandleFunc("/club-requests", controllers.GetClubRequests).Methods("GET")
+	coachRoutes.HandleFunc("/approve-coach/{id}", controllers.ApproveCoach).Methods("PUT")
+	coachRoutes.HandleFunc("/reject-coach/{id}", controllers.RejectCoach).Methods("PUT")
+
+	// Admin-only routes
+	adminRoutes := myRouter.PathPrefix("/admin").Subrouter()
+	adminRoutes.Use(middleware.AuthMiddleware)
+	adminRoutes.Use(middleware.RequireRole("admin"))
+	adminRoutes.HandleFunc("/create-coach", controllers.AdminCreateCoach).Methods("POST")
+	adminRoutes.HandleFunc("/users", controllers.GetAllUsers).Methods("GET")
+	adminRoutes.HandleFunc("/users/{id}/role", controllers.UpdateUserRole).Methods("PUT")
+	adminRoutes.HandleFunc("/users/{id}/club", controllers.UpdateUserClub).Methods("PUT")
+	adminRoutes.HandleFunc("/coach-students", controllers.AssignStudentToCoach).Methods("POST")
+	adminRoutes.HandleFunc("/coach-students/{id}", controllers.RemoveStudentFromCoach).Methods("DELETE")
+	adminRoutes.HandleFunc("/clubs", controllers.GetAllClubs).Methods("GET")
+	adminRoutes.HandleFunc("/clubs", controllers.CreateClub).Methods("POST")
+	adminRoutes.HandleFunc("/clubs/{id}", controllers.DeleteClub).Methods("DELETE")
+
+	// Serve uploaded photos
+	myRouter.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("/app/uploads"))))
+
+	// CORS configuration
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	})
+
+	// Apply middleware: CORS + gzip compression + cache headers
+	handler := c.Handler(gzipMiddleware(cacheMiddleware(myRouter)))
 
 	// Start the server
 	log.Fatal(http.ListenAndServe(":"+port, handler))

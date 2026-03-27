@@ -8,6 +8,5 @@ type Config struct {
 }
 
 var GetConnectionString = func(config Config) string {
-	return config.User + ":" + config.Hash + "@tcp(" + config.ServerName + ")/" + config.DB
-
+	return config.User + ":" + config.Hash + "@tcp(" + config.ServerName + ")/" + config.DB + "?parseTime=true"
 }

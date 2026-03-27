@@ -14,6 +14,7 @@ RUN apk add --no-cache git
 COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
+RUN go mod tidy
 
 ## Run go build to compile the binary
 RUN go build  -o main .

@@ -3,7 +3,7 @@ services:
     image: mysql
     container_name: godockerDB
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=techniques
@@ -39,6 +39,14 @@ services:
       - FRONTEND_URL=${FRONTEND_URL}
     volumes:
       - uploads_data:/app/uploads
+    restart: always
+
+  frontend:
+    build: ../JudoTest
+    ports:
+      - "3000:80"
+    depends_on:
+      - web
     restart: always
 
 volumes:

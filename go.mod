@@ -4,9 +4,11 @@ go 1.19
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/gorilla/mux v1.7.2
 	github.com/jinzhu/gorm v1.9.16
 	github.com/stretchr/testify v1.8.0
+	golang.org/x/crypto v0.17.0
 )
 
 require (
