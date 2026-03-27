@@ -1,81 +1,95 @@
 #!/bin/bash
 
-# Techniques Backend Deployment Script
-# This script automates the deployment process to your server
+# JudoQuiz Deploy Script - Zero downtime, no password prompts
+# Usage: ./deploy.sh [backend|frontend|all]
 
-# Configuration
-SERVER_IP="91.99.101.21"
-SERVER_USER="root"
-SERVER_PATH="/root/judoquiz/Techniques"
-SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+SERVER="root@91.99.101.21"
+BACKEND_PATH="/root/judoquiz/Techniques"
+FRONTEND_PATH="/root/judoquiz/JudoTest"
 
-# Colors for output
-RED='\033[0;31m'
 GREEN='\033[0;32m'
+RED='\033[0;31m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-echo -e "${GREEN}🚀 Starting Techniques Backend deployment...${NC}"
+log() { echo -e "${GREEN}[$(date +%H:%M:%S)]${NC} $1"; }
+warn() { echo -e "${YELLOW}[$(date +%H:%M:%S)]${NC} $1"; }
+fail() { echo -e "${RED}[$(date +%H:%M:%S)] ERROR:${NC} $1"; exit 1; }
 
-# Function to check SSH key authentication
-check_ssh_auth() {
-    echo -e "${YELLOW}🔑 Checking SSH key authentication...${NC}"
-    
-    if ssh -o BatchMode=yes -o ConnectTimeout=10 "$SERVER_USER@$SERVER_IP" "echo 'SSH key auth working'" 2>/dev/null; then
-        echo -e "${GREEN}✅ SSH key authentication is working${NC}"
-        return 0
-    else
-        echo -e "${RED}❌ SSH key authentication failed${NC}"
-        echo -e "${YELLOW}💡 You'll need to enter your password for each command${NC}"
-        return 1
+run() {
+    ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$SERVER" "$1"
+    if [ $? -ne 0 ]; then
+        fail "Command failed: $1"
     fi
 }
 
-# Function to execute commands on remote server
-execute_remote_command() {
-    local command="$1"
-    echo -e "${YELLOW}Executing: $command${NC}"
-    
-    # Try with SSH key first, fallback to password if needed
-    if [ -f "$SSH_KEY_PATH" ]; then
-        ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$SERVER_USER@$SERVER_IP" "$command"
+# Check SSH key auth
+check_ssh() {
+    if ssh -o BatchMode=yes -o ConnectTimeout=5 "$SERVER" "echo ok" 2>/dev/null; then
+        log "SSH key auth working"
     else
-        ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" "$command"
+        warn "SSH key not set up. Setting up now..."
+        if [ ! -f ~/.ssh/id_rsa.pub ] && [ ! -f ~/.ssh/id_ed25519.pub ]; then
+            ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -q
+            log "SSH key generated"
+        fi
+        KEY=$(cat ~/.ssh/id_ed25519.pub 2>/dev/null || cat ~/.ssh/id_rsa.pub 2>/dev/null)
+        echo "Enter server password ONE LAST TIME to copy SSH key:"
+        ssh-copy-id -o StrictHostKeyChecking=no "$SERVER"
+        if ssh -o BatchMode=yes -o ConnectTimeout=5 "$SERVER" "echo ok" 2>/dev/null; then
+            log "SSH key installed - no more passwords needed!"
+        else
+            fail "SSH key setup failed"
+        fi
     fi
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Command executed successfully${NC}"
-    else
-        echo -e "${RED}❌ Command failed${NC}"
+}
+
+deploy_backend() {
+    log "Deploying backend..."
+    run "cd $BACKEND_PATH && git pull"
+    log "Building new image (old one still running)..."
+    run "cd $BACKEND_PATH && docker compose build"
+    log "Swapping to new version..."
+    run "cd $BACKEND_PATH && docker compose up -d"
+    log "Backend deployed!"
+    run "cd $BACKEND_PATH && docker compose ps"
+}
+
+deploy_frontend() {
+    log "Deploying frontend..."
+    run "cd $FRONTEND_PATH && git pull"
+    log "Building new image (old one still running)..."
+    run "cd $FRONTEND_PATH && docker-compose build"
+    log "Swapping to new version..."
+    run "cd $FRONTEND_PATH && docker-compose up -d"
+    log "Frontend deployed!"
+    run "cd $FRONTEND_PATH && docker-compose ps"
+}
+
+TARGET=${1:-all}
+
+log "JudoQuiz deployment starting..."
+check_ssh
+
+case $TARGET in
+    backend)
+        deploy_backend
+        ;;
+    frontend)
+        deploy_frontend
+        ;;
+    all)
+        deploy_backend
+        echo ""
+        deploy_frontend
+        ;;
+    *)
+        echo "Usage: ./deploy.sh [backend|frontend|all]"
         exit 1
-    fi
-}
+        ;;
+esac
 
-# Main deployment process
-echo -e "${YELLOW}📡 Connecting to server $SERVER_USER@$SERVER_IP${NC}"
-
-# Check SSH authentication
-check_ssh_auth
-
-# Pull latest code
-echo -e "${YELLOW}📥 Pulling latest code from git...${NC}"
-execute_remote_command "cd $SERVER_PATH && git pull"
-
-# Stop existing containers
-echo -e "${YELLOW}🛑 Stopping existing containers...${NC}"
-execute_remote_command "cd $SERVER_PATH && docker-compose down"
-
-# Build new containers
-echo -e "${YELLOW}🔨 Building new containers...${NC}"
-execute_remote_command "cd $SERVER_PATH && docker-compose build"
-
-# Start containers in detached mode
-echo -e "${YELLOW}🚀 Starting containers...${NC}"
-execute_remote_command "cd $SERVER_PATH && docker-compose up -d"
-
-# Check if containers are running
-echo -e "${YELLOW}🔍 Checking container status...${NC}"
-execute_remote_command "cd $SERVER_PATH && docker-compose ps"
-
-echo -e "${GREEN}🎉 Backend deployment completed successfully!${NC}"
-echo -e "${GREEN}API should be available at: http://$SERVER_IP:8787${NC}"
+echo ""
+log "Deployment complete!"
+log "Frontend: http://judoquiz.com"
+log "Backend:  http://judoquiz.com:8787"
