@@ -61,32 +61,37 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var existing entity.User
-	if database.Connector.Where("email = ?", req.Email).First(&existing).Error == nil {
-		if existing.EmailVerified {
-			http.Error(w, `{"error":"Email already registered"}`, http.StatusConflict)
-			return
-		}
-		// Delete unverified account so they can re-register
-		database.Connector.Delete(&existing)
-	}
-
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, `{"error":"Failed to hash password"}`, http.StatusInternalServerError)
 		return
 	}
 
-	user := entity.User{
-		Email:         req.Email,
-		PasswordHash:  string(hash),
-		Name:          req.Name,
-		Role:          "student",
-		EmailVerified: false,
-	}
-
-	if err := database.Connector.Create(&user).Error; err != nil {
-		http.Error(w, `{"error":"Failed to create user"}`, http.StatusInternalServerError)
-		return
+	var user entity.User
+	if database.Connector.Where("email = ?", req.Email).First(&existing).Error == nil {
+		if existing.EmailVerified && existing.PasswordHash != "" {
+			http.Error(w, `{"error":"Email already registered"}`, http.StatusConflict)
+			return
+		}
+		// Coach-created or unverified account — take it over, keep existing data (belts, competitions, club)
+		database.Connector.Model(&existing).Updates(map[string]interface{}{
+			"password_hash":  string(hash),
+			"name":           req.Name,
+			"email_verified": false,
+		})
+		user = existing
+	} else {
+		user = entity.User{
+			Email:         req.Email,
+			PasswordHash:  string(hash),
+			Name:          req.Name,
+			Role:          "student",
+			EmailVerified: false,
+		}
+		if err := database.Connector.Create(&user).Error; err != nil {
+			http.Error(w, `{"error":"Failed to create user"}`, http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// Create verification token
@@ -390,6 +395,57 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "Password reset successfully"})
+}
+
+func AcceptInvite(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Token    string `json:"token"`
+		Password string `json:"password"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if len(req.Password) < 6 {
+		http.Error(w, `{"error":"Password must be at least 6 characters"}`, http.StatusBadRequest)
+		return
+	}
+
+	var vt entity.VerificationToken
+	if err := database.Connector.
+		Where("token = ? AND purpose = ? AND used = ? AND expires_at > ?", req.Token, "invite", false, time.Now()).
+		First(&vt).Error; err != nil {
+		http.Error(w, `{"error":"Invalid or expired invite link"}`, http.StatusBadRequest)
+		return
+	}
+
+	database.Connector.Model(&vt).Update("used", true)
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, `{"error":"Failed to process password"}`, http.StatusInternalServerError)
+		return
+	}
+
+	database.Connector.Model(&entity.User{}).Where("email = ?", vt.Email).Updates(map[string]interface{}{
+		"password_hash":  string(hash),
+		"email_verified": true,
+	})
+
+	var user entity.User
+	database.Connector.Preload("Club").Preload("Belts").Preload("Competitions").Preload("QuizResults").
+		Where("email = ?", vt.Email).First(&user)
+
+	jwtToken, err := middleware.GenerateToken(user.ID, user.Role)
+	if err != nil {
+		http.Error(w, `{"error":"Failed to generate token"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(authResponse{User: user, Token: jwtToken})
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {

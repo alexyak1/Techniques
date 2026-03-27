@@ -11,6 +11,7 @@ type User struct {
 	ID           uint      `json:"id" gorm:"primary_key;auto_increment"`
 	Email        string    `json:"email,omitempty" gorm:"size:255"`
 	PasswordHash string    `json:"-" gorm:"size:255"`
+	HasPassword  bool      `json:"has_password" gorm:"-"`
 	Name         string    `json:"name" gorm:"not null;size:255"`
 	Bio          string    `json:"bio,omitempty"`
 	PhotoURL     string    `json:"photo_url,omitempty" gorm:"size:512"`

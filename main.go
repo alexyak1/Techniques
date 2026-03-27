@@ -179,6 +179,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/auth/confirm-password", controllers.ConfirmPasswordChange).Methods("GET")
 	myRouter.HandleFunc("/auth/forgot-password", controllers.ForgotPassword).Methods("POST")
 	myRouter.HandleFunc("/auth/reset-password", controllers.ResetPassword).Methods("POST")
+	myRouter.HandleFunc("/auth/accept-invite", controllers.AcceptInvite).Methods("POST")
 
 	// Protected routes - any authenticated user
 	protected := myRouter.PathPrefix("").Subrouter()
@@ -212,6 +213,7 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/students/{id}/competitions", controllers.CoachAddCompetition).Methods("POST")
 	coachRoutes.HandleFunc("/students/{id}/competitions/{compId}", controllers.CoachDeleteCompetition).Methods("DELETE")
 	coachRoutes.HandleFunc("/students/{id}/profile", controllers.CoachUpdateStudentProfile).Methods("PUT")
+	coachRoutes.HandleFunc("/students/{id}/invite", controllers.InviteStudent).Methods("POST")
 	coachRoutes.HandleFunc("/available-students", controllers.GetAvailableStudents).Methods("GET")
 	coachRoutes.HandleFunc("/add-student", controllers.CoachAddStudent).Methods("POST")
 	coachRoutes.HandleFunc("/create-student", controllers.CoachCreateStudent).Methods("POST")

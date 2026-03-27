@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"main/database"
+	"main/email"
 	"main/entity"
 	"main/middleware"
 	"net/http"
@@ -280,6 +281,8 @@ func GetUserQuizResults(w http.ResponseWriter, r *http.Request) {
 // Coach endpoints
 
 func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
+	coachID := middleware.GetUserIDFromContext(r)
+
 	var req struct {
 		Name       string `json:"name"`
 		Date       string `json:"date"`
@@ -296,6 +299,11 @@ func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 	if req.Name == "" || req.Date == "" {
 		http.Error(w, `{"error":"Name and date are required"}`, http.StatusBadRequest)
 		return
+	}
+
+	// If no participants, add the coach as organizer so the competition shows up
+	if len(req.StudentIDs) == 0 {
+		req.StudentIDs = []uint{coachID}
 	}
 
 	var created []entity.Competition
@@ -388,6 +396,18 @@ func UpdateCompetitionResult(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(comp)
 }
 
+func setHasPassword(users ...*entity.User) {
+	for _, u := range users {
+		u.HasPassword = u.PasswordHash != ""
+	}
+}
+
+func setHasPasswordSlice(users []entity.User) {
+	for i := range users {
+		users[i].HasPassword = users[i].PasswordHash != ""
+	}
+}
+
 func getCoachClubID(coachID uint) *uint {
 	var coach entity.User
 	database.Connector.First(&coach, coachID)
@@ -422,6 +442,7 @@ func GetAvailableStudents(w http.ResponseWriter, r *http.Request) {
 	if students == nil {
 		students = []entity.User{}
 	}
+	setHasPasswordSlice(students)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(students)
@@ -543,6 +564,7 @@ func GetStudents(w http.ResponseWriter, r *http.Request) {
 	if students == nil {
 		students = []entity.User{}
 	}
+	setHasPasswordSlice(students)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(students)
@@ -581,6 +603,7 @@ func GetStudentProfile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"Student not found"}`, http.StatusNotFound)
 		return
 	}
+	setHasPassword(&student)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(student)
@@ -694,6 +717,7 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Name     string `json:"name"`
 		PhotoURL string `json:"photo_url"`
+		Email    string `json:"email"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -708,6 +732,15 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 	if req.PhotoURL != "" {
 		updates["photo_url"] = req.PhotoURL
 	}
+	if req.Email != "" {
+		req.Email = strings.TrimSpace(strings.ToLower(req.Email))
+		var existing entity.User
+		if database.Connector.Where("email = ? AND id != ?", req.Email, studentID).First(&existing).Error == nil {
+			http.Error(w, `{"error":"Email already in use"}`, http.StatusConflict)
+			return
+		}
+		updates["email"] = req.Email
+	}
 
 	if len(updates) > 0 {
 		database.Connector.Model(&entity.User{}).Where("id = ?", studentID).Updates(updates)
@@ -718,6 +751,55 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
+}
+
+func InviteStudent(w http.ResponseWriter, r *http.Request) {
+	studentID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid student ID"}`, http.StatusBadRequest)
+		return
+	}
+
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	req.Email = strings.TrimSpace(strings.ToLower(req.Email))
+	if req.Email == "" {
+		http.Error(w, `{"error":"Email is required"}`, http.StatusBadRequest)
+		return
+	}
+
+	// Check email not taken by another user
+	var existing entity.User
+	if database.Connector.Where("email = ? AND id != ?", req.Email, studentID).First(&existing).Error == nil {
+		http.Error(w, `{"error":"Email already in use by another account"}`, http.StatusConflict)
+		return
+	}
+
+	// Set email on student
+	database.Connector.Model(&entity.User{}).Where("id = ?", studentID).Update("email", req.Email)
+
+	// Create invite token
+	token := email.GenerateToken()
+	vt := entity.VerificationToken{
+		Email:     req.Email,
+		Token:     token,
+		Purpose:   "invite",
+		ExpiresAt: time.Now().Add(7 * 24 * time.Hour), // 7 days
+	}
+	database.Connector.Create(&vt)
+
+	link := fmt.Sprintf("%s/accept-invite?token=%s", os.Getenv("FRONTEND_URL"), token)
+	email.SendVerificationLink(req.Email, link, "register")
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "Invite sent"})
 }
 
 // Admin endpoints
