@@ -46,6 +46,7 @@ type Competition struct {
 	Link     string `json:"link,omitempty" gorm:"size:512"`
 	Result   string `json:"result" gorm:"not null;size:20"`
 	Category string `json:"category,omitempty" gorm:"size:20"`
+	Deleted  bool   `json:"deleted" gorm:"default:false"`
 }
 
 type QuizResult struct {

@@ -123,9 +123,9 @@ func GetMyClubCompetitionsFull(w http.ResponseWriter, r *http.Request) {
 	var comps []CompetitionWithUser
 	if usr.ClubID != nil {
 		database.Connector.Raw(`
-			SELECT c.*, u.name as user_name FROM competitions c
-			JOIN users u ON c.user_id = u.id
-			WHERE c.club_id = ?
+			SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+			LEFT JOIN users u ON c.user_id = u.id
+			WHERE c.club_id = ? AND (c.deleted = 0 OR c.deleted IS NULL)
 			ORDER BY c.date DESC, c.name
 		`, *usr.ClubID).Scan(&comps)
 	}
@@ -471,17 +471,17 @@ func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
 
 	if role == "admin" {
 		database.Connector.Raw(`
-			SELECT c.*, u.name as user_name FROM competitions c
-			JOIN users u ON c.user_id = u.id
+			SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+			LEFT JOIN users u ON c.user_id = u.id
 			ORDER BY c.date DESC, c.name
 		`).Scan(&comps)
 	} else {
 		clubID := getCoachClubID(userID)
 		if clubID != nil {
 			database.Connector.Raw(`
-				SELECT c.*, u.name as user_name FROM competitions c
-				JOIN users u ON c.user_id = u.id
-				WHERE c.club_id = ?
+				SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+				LEFT JOIN users u ON c.user_id = u.id
+				WHERE c.club_id = ? AND (c.deleted = 0 OR c.deleted IS NULL)
 				ORDER BY c.date DESC, c.name
 			`, *clubID).Scan(&comps)
 		}
@@ -569,6 +569,7 @@ func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 		Link       string `json:"link"`
 		StudentIDs []uint `json:"student_ids"`
 		Category   string `json:"category"`
+		ClubOnly   bool   `json:"club_only"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -581,7 +582,7 @@ func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If no participants, add the coach as organizer so the competition shows up
+	// If no participants, add the coach so the event exists and can be expanded to add people
 	if len(req.StudentIDs) == 0 {
 		req.StudentIDs = []uint{coachID}
 	}
@@ -635,14 +636,112 @@ func UpdateCompetitionCategory(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(comp)
 }
 
+func UpdateCompetitionEvent(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		OldName string `json:"old_name"`
+		OldDate string `json:"old_date"`
+		Name    string `json:"name"`
+		Date    string `json:"date"`
+		Link    string `json:"link"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	coachID := middleware.GetUserIDFromContext(r)
+	clubID := getCoachClubID(coachID)
+
+	updates := map[string]interface{}{}
+	if req.Name != "" {
+		updates["name"] = req.Name
+	}
+	if req.Date != "" {
+		updates["date"] = req.Date
+	}
+	updates["link"] = req.Link
+
+	query := database.Connector.Model(&entity.Competition{}).Where("name = ? AND date = ?", req.OldName, req.OldDate)
+	if clubID != nil {
+		query = query.Where("club_id = ?", *clubID)
+	}
+	query.Updates(updates)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "updated"})
+}
+
 func DeleteCompetitionEntry(w http.ResponseWriter, r *http.Request) {
 	compID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
 		http.Error(w, `{"error":"Invalid competition ID"}`, http.StatusBadRequest)
 		return
 	}
-	database.Connector.Where("id = ?", compID).Delete(&entity.Competition{})
+
+	// Check if this is the last participant — if so, keep as empty placeholder
+	var comp entity.Competition
+	database.Connector.First(&comp, compID)
+
+	var count int
+	database.Connector.Model(&entity.Competition{}).Where("name = ? AND date = ? AND club_id = ?", comp.Name, comp.Date, comp.ClubID).Count(&count)
+
+	if count <= 1 {
+		// Last participant — zero out instead of deleting
+		database.Connector.Model(&comp).Updates(map[string]interface{}{"user_id": 0, "result": "", "category": ""})
+	} else {
+		database.Connector.Where("id = ?", compID).Delete(&entity.Competition{})
+	}
+
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func DeleteCompetitionEvent(w http.ResponseWriter, r *http.Request) {
+	coachID := middleware.GetUserIDFromContext(r)
+	clubID := getCoachClubID(coachID)
+
+	var req struct {
+		Name string `json:"name"`
+		Date string `json:"date"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	query := database.Connector.Model(&entity.Competition{}).Where("name = ? AND date = ?", req.Name, req.Date)
+	if clubID != nil {
+		query = query.Where("club_id = ?", *clubID)
+	}
+	query.Update("deleted", true)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "deleted"})
+}
+
+func RestoreCompetitionEvent(w http.ResponseWriter, r *http.Request) {
+	coachID := middleware.GetUserIDFromContext(r)
+	clubID := getCoachClubID(coachID)
+
+	var req struct {
+		Name string `json:"name"`
+		Date string `json:"date"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	query := database.Connector.Model(&entity.Competition{}).Where("name = ? AND date = ?", req.Name, req.Date)
+	if clubID != nil {
+		query = query.Where("club_id = ?", *clubID)
+	}
+	query.Update("deleted", false)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "restored"})
 }
 
 func UpdateCompetitionResult(w http.ResponseWriter, r *http.Request) {
