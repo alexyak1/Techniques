@@ -49,6 +49,24 @@ func UserJoinClub(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "pending"})
 }
 
+func GetMyClubCoaches(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+
+	var user entity.User
+	database.Connector.First(&user, userID)
+
+	var coaches []entity.User
+	if user.ClubID != nil {
+		database.Connector.Where("club_id = ? AND club_status = ? AND (role = ? OR role = ?)", *user.ClubID, "approved", "coach", "admin").Find(&coaches)
+	}
+	if coaches == nil {
+		coaches = []entity.User{}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(coaches)
+}
+
 func UserLeaveClub(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserIDFromContext(r)
 	database.Connector.Model(&entity.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
@@ -57,6 +75,58 @@ func UserLeaveClub(w http.ResponseWriter, r *http.Request) {
 	})
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "left"})
+}
+
+func AddLicense(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	var lic entity.License
+	if err := json.NewDecoder(r.Body).Decode(&lic); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+	if lic.Name == "" || lic.IssuedAt == "" {
+		http.Error(w, `{"error":"Name and issued_at are required"}`, http.StatusBadRequest)
+		return
+	}
+	lic.UserID = userID
+	database.Connector.Create(&lic)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(lic)
+}
+
+func DeleteLicense(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	licID, _ := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	database.Connector.Where("id = ? AND user_id = ?", licID, userID).Delete(&entity.License{})
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func CoachAddLicense(w http.ResponseWriter, r *http.Request) {
+	targetID, _ := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	var lic entity.License
+	if err := json.NewDecoder(r.Body).Decode(&lic); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+	if lic.Name == "" || lic.IssuedAt == "" {
+		http.Error(w, `{"error":"Name and issued_at are required"}`, http.StatusBadRequest)
+		return
+	}
+	lic.UserID = uint(targetID)
+	database.Connector.Create(&lic)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(lic)
+}
+
+func CoachDeleteLicense(w http.ResponseWriter, r *http.Request) {
+	targetID, _ := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	licID, _ := strconv.ParseUint(mux.Vars(r)["licId"], 10, 64)
+	database.Connector.Where("id = ? AND user_id = ?", licID, targetID).Delete(&entity.License{})
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +161,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user entity.User
-	database.Connector.Preload("Belts").Preload("Competitions").Preload("QuizResults").First(&user, userID)
+	database.Connector.Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").First(&user, userID)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
@@ -161,6 +231,13 @@ func AddBelt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	belt.UserID = userID
+	// Resolve examiner name if examiner_id provided
+	if belt.ExaminerID != nil && belt.ExaminerName == "" {
+		var examiner entity.User
+		if database.Connector.First(&examiner, *belt.ExaminerID).Error == nil {
+			belt.ExaminerName = examiner.Name
+		}
+	}
 	if err := database.Connector.Create(&belt).Error; err != nil {
 		http.Error(w, `{"error":"Failed to add belt"}`, http.StatusInternalServerError)
 		return
@@ -315,6 +392,71 @@ func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(comps)
+}
+
+type ClubStats struct {
+	TotalCompetitions int `json:"total_competitions"`
+	TotalParticipants int `json:"total_participants"`
+	Gold              int `json:"gold"`
+	Silver            int `json:"silver"`
+	Bronze            int `json:"bronze"`
+}
+
+func GetClubStats(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	role := middleware.GetUserRoleFromContext(r)
+
+	dateFrom := r.URL.Query().Get("from")
+	dateTo := r.URL.Query().Get("to")
+
+	var stats ClubStats
+
+	var query string
+	var args []interface{}
+
+	if role == "admin" {
+		query = "SELECT * FROM competitions WHERE 1=1"
+	} else {
+		clubID := getCoachClubID(userID)
+		if clubID == nil {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(stats)
+			return
+		}
+		query = "SELECT * FROM competitions WHERE club_id = ?"
+		args = append(args, *clubID)
+	}
+
+	if dateFrom != "" {
+		query += " AND date >= ?"
+		args = append(args, dateFrom)
+	}
+	if dateTo != "" {
+		query += " AND date <= ?"
+		args = append(args, dateTo)
+	}
+
+	var comps []entity.Competition
+	database.Connector.Raw(query, args...).Scan(&comps)
+
+	// Count unique competitions by name+date
+	compNames := map[string]bool{}
+	for _, c := range comps {
+		compNames[c.Name+"_"+c.Date] = true
+		switch c.Result {
+		case "gold":
+			stats.Gold++
+		case "silver":
+			stats.Silver++
+		case "bronze":
+			stats.Bronze++
+		}
+	}
+	stats.TotalCompetitions = len(compNames)
+	stats.TotalParticipants = len(comps)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(stats)
 }
 
 func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
@@ -589,14 +731,14 @@ func GetStudents(w http.ResponseWriter, r *http.Request) {
 
 	if role == "admin" {
 		database.Connector.Where("role = ?", "student").
-			Preload("Belts").Preload("Competitions").Preload("QuizResults").Preload("Club").
+			Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").Preload("Club").
 			Find(&students)
 	} else {
 		// Coach: get students in same club
 		clubID := getCoachClubID(userID)
 		if clubID != nil {
 			database.Connector.Where("role = ? AND club_id = ?", "student", *clubID).
-				Preload("Belts").Preload("Competitions").Preload("QuizResults").Preload("Club").
+				Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").Preload("Club").
 				Find(&students)
 		}
 	}
@@ -638,7 +780,7 @@ func GetStudentProfile(w http.ResponseWriter, r *http.Request) {
 
 	var student entity.User
 	if err := database.Connector.
-		Preload("Belts").Preload("Competitions").Preload("QuizResults").
+		Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").
 		First(&student, studentID).Error; err != nil {
 		http.Error(w, `{"error":"Student not found"}`, http.StatusNotFound)
 		return
@@ -671,11 +813,11 @@ func CoachAddBelt(w http.ResponseWriter, r *http.Request) {
 
 	belt.UserID = uint(studentID)
 
-	// Default examiner to current coach if not specified
-	if belt.ExaminerID == nil {
+	// Default examiner to current coach if not specified and no custom name
+	if belt.ExaminerID == nil && belt.ExaminerName == "" {
 		belt.ExaminerID = &coachID
 	}
-	// Resolve examiner name
+	// Resolve examiner name from ID
 	if belt.ExaminerID != nil && belt.ExaminerName == "" {
 		var examiner entity.User
 		if database.Connector.First(&examiner, *belt.ExaminerID).Error == nil {
@@ -787,7 +929,7 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user entity.User
-	database.Connector.Preload("Belts").Preload("Competitions").Preload("QuizResults").First(&user, studentID)
+	database.Connector.Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").First(&user, studentID)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
@@ -993,10 +1135,10 @@ func GetClubCoaches(w http.ResponseWriter, r *http.Request) {
 	if clubID != nil {
 		if role == "admin" {
 			database.Connector.Where("club_id = ? AND club_status = ? AND (role = ? OR role = ?)", *clubID, "approved", "coach", "admin").
-				Preload("Belts").Preload("Competitions").Preload("Club").Find(&coaches)
+				Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("Club").Find(&coaches)
 		} else {
 			database.Connector.Where("club_id = ? AND club_status = ? AND role = ?", *clubID, "approved", "coach").
-				Preload("Belts").Preload("Competitions").Preload("Club").Find(&coaches)
+				Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("Club").Find(&coaches)
 		}
 	}
 	if coaches == nil {
@@ -1016,7 +1158,7 @@ func GetCoachProfile(w http.ResponseWriter, r *http.Request) {
 
 	var coach entity.User
 	if err := database.Connector.
-		Preload("Belts").Preload("Competitions").Preload("Club").
+		Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("Club").
 		First(&coach, coachID).Error; err != nil {
 		http.Error(w, `{"error":"Coach not found"}`, http.StatusNotFound)
 		return

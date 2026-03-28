@@ -136,7 +136,7 @@ func VerifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	// Load user and generate JWT
 	var user entity.User
-	database.Connector.Preload("Club").Preload("Belts").Preload("Competitions").Preload("QuizResults").
+	database.Connector.Preload("Club").Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").
 		Where("email = ?", vt.Email).First(&user)
 
 	jwtToken, err := middleware.GenerateToken(user.ID, user.Role)
@@ -435,7 +435,7 @@ func AcceptInvite(w http.ResponseWriter, r *http.Request) {
 	})
 
 	var user entity.User
-	database.Connector.Preload("Club").Preload("Belts").Preload("Competitions").Preload("QuizResults").
+	database.Connector.Preload("Club").Preload("Belts").Preload("Licenses").Preload("Competitions").Preload("QuizResults").
 		Where("email = ?", vt.Email).First(&user)
 
 	jwtToken, err := middleware.GenerateToken(user.ID, user.Role)
@@ -453,7 +453,7 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 
 	var user entity.User
 	if err := database.Connector.
-		Preload("Belts").
+		Preload("Belts").Preload("Licenses").
 		Preload("Competitions").
 		Preload("QuizResults").
 		Preload("Club").

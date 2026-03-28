@@ -25,6 +25,7 @@ type User struct {
 	Belts        []Belt         `json:"belts,omitempty" gorm:"foreignkey:UserID"`
 	Competitions []Competition  `json:"competitions,omitempty" gorm:"foreignkey:UserID"`
 	QuizResults  []QuizResult   `json:"quiz_results,omitempty" gorm:"foreignkey:UserID"`
+	Licenses     []License      `json:"licenses,omitempty" gorm:"foreignkey:UserID"`
 }
 
 type Belt struct {
@@ -64,6 +65,14 @@ type VerificationToken struct {
 	Data      string    `json:"data,omitempty" gorm:"type:text"`
 	ExpiresAt time.Time `json:"expires_at" gorm:"not null"`
 	Used      bool      `json:"used" gorm:"default:false"`
+}
+
+type License struct {
+	ID        uint   `json:"id" gorm:"primary_key;auto_increment"`
+	UserID    uint   `json:"user_id" gorm:"not null"`
+	Name      string `json:"name" gorm:"not null;size:255"`
+	IssuedAt  string `json:"issued_at" gorm:"not null;size:10"`
+	ExpiresAt string `json:"expires_at,omitempty" gorm:"size:10"`
 }
 
 type CoachStudent struct {

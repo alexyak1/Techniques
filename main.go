@@ -119,6 +119,7 @@ func initDB() {
 		&entity.Competition{},
 		&entity.QuizResult{},
 		&entity.CoachStudent{},
+		&entity.License{},
 		&entity.VerificationToken{},
 	)
 
@@ -188,6 +189,9 @@ func handleRequests() {
 	protected.HandleFunc("/user/clubs", controllers.GetAllClubsForUser).Methods("GET")
 	protected.HandleFunc("/user/join-club", controllers.UserJoinClub).Methods("POST")
 	protected.HandleFunc("/user/leave-club", controllers.UserLeaveClub).Methods("POST")
+	protected.HandleFunc("/user/club-coaches", controllers.GetMyClubCoaches).Methods("GET")
+	protected.HandleFunc("/user/licenses", controllers.AddLicense).Methods("POST")
+	protected.HandleFunc("/user/licenses/{id}", controllers.DeleteLicense).Methods("DELETE")
 	protected.HandleFunc("/user/profile", controllers.UpdateProfile).Methods("PUT")
 	protected.HandleFunc("/user/change-password", controllers.RequestPasswordChange).Methods("PUT")
 	protected.HandleFunc("/user/upload-photo", controllers.UploadPhoto).Methods("POST")
@@ -205,6 +209,7 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/students", controllers.GetStudents).Methods("GET")
 	coachRoutes.HandleFunc("/students/{id}", controllers.GetStudentProfile).Methods("GET")
 	coachRoutes.HandleFunc("/competitions", controllers.GetClubCompetitions).Methods("GET")
+	coachRoutes.HandleFunc("/club-stats", controllers.GetClubStats).Methods("GET")
 	coachRoutes.HandleFunc("/competitions", controllers.CreateCoachCompetition).Methods("POST")
 	coachRoutes.HandleFunc("/competitions/{id}/result", controllers.UpdateCompetitionResult).Methods("PUT")
 	coachRoutes.HandleFunc("/competitions/{id}/category", controllers.UpdateCompetitionCategory).Methods("PUT")
@@ -215,6 +220,8 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/students/{id}/competitions/{compId}", controllers.CoachDeleteCompetition).Methods("DELETE")
 	coachRoutes.HandleFunc("/students/{id}/profile", controllers.CoachUpdateStudentProfile).Methods("PUT")
 	coachRoutes.HandleFunc("/students/{id}/invite", controllers.InviteStudent).Methods("POST")
+	coachRoutes.HandleFunc("/coaches/{id}/licenses", controllers.CoachAddLicense).Methods("POST")
+	coachRoutes.HandleFunc("/coaches/{id}/licenses/{licId}", controllers.CoachDeleteLicense).Methods("DELETE")
 	coachRoutes.HandleFunc("/available-students", controllers.GetAvailableStudents).Methods("GET")
 	coachRoutes.HandleFunc("/add-student", controllers.CoachAddStudent).Methods("POST")
 	coachRoutes.HandleFunc("/create-student", controllers.CoachCreateStudent).Methods("POST")
