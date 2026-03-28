@@ -67,6 +67,103 @@ func GetMyClubCoaches(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(coaches)
 }
 
+func GetMyClubStats(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	var usr entity.User
+	database.Connector.First(&usr, userID)
+
+	dateFrom := r.URL.Query().Get("from")
+	dateTo := r.URL.Query().Get("to")
+
+	var stats ClubStats
+	if usr.ClubID == nil {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(stats)
+		return
+	}
+
+	query := "SELECT * FROM competitions WHERE club_id = ?"
+	args := []interface{}{*usr.ClubID}
+	if dateFrom != "" {
+		query += " AND date >= ?"
+		args = append(args, dateFrom)
+	}
+	if dateTo != "" {
+		query += " AND date <= ?"
+		args = append(args, dateTo)
+	}
+
+	var comps []entity.Competition
+	database.Connector.Raw(query, args...).Scan(&comps)
+
+	compNames := map[string]bool{}
+	for _, c := range comps {
+		compNames[c.Name+"_"+c.Date] = true
+		switch c.Result {
+		case "gold":
+			stats.Gold++
+		case "silver":
+			stats.Silver++
+		case "bronze":
+			stats.Bronze++
+		}
+	}
+	stats.TotalCompetitions = len(compNames)
+	stats.TotalParticipants = len(comps)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(stats)
+}
+
+func GetMyClubCompetitionsFull(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	var usr entity.User
+	database.Connector.First(&usr, userID)
+
+	var comps []CompetitionWithUser
+	if usr.ClubID != nil {
+		database.Connector.Raw(`
+			SELECT c.*, u.name as user_name FROM competitions c
+			JOIN users u ON c.user_id = u.id
+			WHERE c.club_id = ?
+			ORDER BY c.date DESC, c.name
+		`, *usr.ClubID).Scan(&comps)
+	}
+	if comps == nil {
+		comps = []CompetitionWithUser{}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(comps)
+}
+
+func GetMyClubCompetitions(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	var usr entity.User
+	database.Connector.First(&usr, userID)
+
+	type CompSummary struct {
+		Name string `json:"name"`
+		Date string `json:"date"`
+		Link string `json:"link"`
+	}
+
+	var comps []CompSummary
+	if usr.ClubID != nil {
+		database.Connector.Raw(`
+			SELECT DISTINCT name, date, link FROM competitions
+			WHERE club_id = ?
+			ORDER BY date DESC
+		`, *usr.ClubID).Scan(&comps)
+	}
+	if comps == nil {
+		comps = []CompSummary{}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(comps)
+}
+
 func UserLeaveClub(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserIDFromContext(r)
 	database.Connector.Model(&entity.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
@@ -285,6 +382,10 @@ func AddCompetition(w http.ResponseWriter, r *http.Request) {
 	}
 
 	comp.UserID = userID
+	// Set club_id from user's club
+	var usr entity.User
+	database.Connector.First(&usr, userID)
+	comp.ClubID = usr.ClubID
 	if err := database.Connector.Create(&comp).Error; err != nil {
 		http.Error(w, `{"error":"Failed to add competition"}`, http.StatusInternalServerError)
 		return
@@ -867,6 +968,10 @@ func CoachAddCompetition(w http.ResponseWriter, r *http.Request) {
 	}
 
 	comp.UserID = uint(studentID)
+	// Set club_id from the coach's club
+	coachID := middleware.GetUserIDFromContext(r)
+	clubID := getCoachClubID(coachID)
+	comp.ClubID = clubID
 	if err := database.Connector.Create(&comp).Error; err != nil {
 		http.Error(w, `{"error":"Failed to add competition"}`, http.StatusInternalServerError)
 		return
