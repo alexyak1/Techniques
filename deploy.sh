@@ -59,11 +59,11 @@ deploy_frontend() {
     log "Deploying frontend..."
     run "cd $FRONTEND_PATH && git pull"
     log "Building new image (old one still running)..."
-    run "cd $FRONTEND_PATH && docker-compose build"
+    run "cd $FRONTEND_PATH && docker compose build"
     log "Swapping to new version..."
-    run "cd $FRONTEND_PATH && docker-compose up -d"
+    run "cd $FRONTEND_PATH && docker compose up -d"
     log "Frontend deployed!"
-    run "cd $FRONTEND_PATH && docker-compose ps"
+    run "cd $FRONTEND_PATH && docker compose ps"
 }
 
 TARGET=${1:-all}
