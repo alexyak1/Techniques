@@ -15,6 +15,7 @@ type User struct {
 	Name         string    `json:"name" gorm:"not null;size:255"`
 	Bio          string    `json:"bio,omitempty"`
 	PhotoURL     string    `json:"photo_url,omitempty" gorm:"size:512"`
+	BirthDate    string    `json:"birth_date,omitempty" gorm:"size:10"`
 	Role          string    `json:"role" gorm:"not null;default:'student';size:20"`
 	EmailVerified bool     `json:"email_verified" gorm:"default:false"`
 	ClubID       *uint     `json:"club_id,omitempty"`

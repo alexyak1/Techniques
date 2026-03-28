@@ -230,8 +230,9 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserIDFromContext(r)
 
 	var req struct {
-		Name     string `json:"name"`
-		PhotoURL string `json:"photo_url"`
+		Name      string `json:"name"`
+		PhotoURL  string `json:"photo_url"`
+		BirthDate string `json:"birth_date"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -245,6 +246,9 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.PhotoURL != "" {
 		updates["photo_url"] = req.PhotoURL
+	}
+	if req.BirthDate != "" {
+		updates["birth_date"] = req.BirthDate
 	}
 
 	if len(updates) == 0 {
@@ -1101,9 +1105,10 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		Name     string `json:"name"`
-		PhotoURL string `json:"photo_url"`
-		Email    string `json:"email"`
+		Name      string `json:"name"`
+		PhotoURL  string `json:"photo_url"`
+		Email     string `json:"email"`
+		BirthDate string `json:"birth_date"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -1126,6 +1131,9 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		updates["email"] = req.Email
+	}
+	if req.BirthDate != "" {
+		updates["birth_date"] = req.BirthDate
 	}
 
 	if len(updates) > 0 {
