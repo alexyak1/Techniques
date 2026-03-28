@@ -204,6 +204,7 @@ func handleRequests() {
 	coachRoutes.Use(middleware.RequireRole("coach", "admin"))
 	coachRoutes.HandleFunc("/students", controllers.GetStudents).Methods("GET")
 	coachRoutes.HandleFunc("/students/{id}", controllers.GetStudentProfile).Methods("GET")
+	coachRoutes.HandleFunc("/competitions", controllers.GetClubCompetitions).Methods("GET")
 	coachRoutes.HandleFunc("/competitions", controllers.CreateCoachCompetition).Methods("POST")
 	coachRoutes.HandleFunc("/competitions/{id}/result", controllers.UpdateCompetitionResult).Methods("PUT")
 	coachRoutes.HandleFunc("/competitions/{id}/category", controllers.UpdateCompetitionCategory).Methods("PUT")

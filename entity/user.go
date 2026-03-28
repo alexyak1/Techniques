@@ -39,6 +39,7 @@ type Belt struct {
 type Competition struct {
 	ID       uint   `json:"id" gorm:"primary_key;auto_increment"`
 	UserID   uint   `json:"user_id" gorm:"not null"`
+	ClubID   *uint  `json:"club_id,omitempty"`
 	Name     string `json:"name" gorm:"not null;size:255"`
 	Date     string `json:"date" gorm:"not null;size:10"`
 	Link     string `json:"link,omitempty" gorm:"size:512"`

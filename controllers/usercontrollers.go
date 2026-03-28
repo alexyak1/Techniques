@@ -280,6 +280,43 @@ func GetUserQuizResults(w http.ResponseWriter, r *http.Request) {
 
 // Coach endpoints
 
+type CompetitionWithUser struct {
+	entity.Competition
+	UserName string `json:"user_name"`
+}
+
+func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	role := middleware.GetUserRoleFromContext(r)
+
+	var comps []CompetitionWithUser
+
+	if role == "admin" {
+		database.Connector.Raw(`
+			SELECT c.*, u.name as user_name FROM competitions c
+			JOIN users u ON c.user_id = u.id
+			ORDER BY c.date DESC, c.name
+		`).Scan(&comps)
+	} else {
+		clubID := getCoachClubID(userID)
+		if clubID != nil {
+			database.Connector.Raw(`
+				SELECT c.*, u.name as user_name FROM competitions c
+				JOIN users u ON c.user_id = u.id
+				WHERE c.club_id = ?
+				ORDER BY c.date DESC, c.name
+			`, *clubID).Scan(&comps)
+		}
+	}
+
+	if comps == nil {
+		comps = []CompetitionWithUser{}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(comps)
+}
+
 func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 	coachID := middleware.GetUserIDFromContext(r)
 
@@ -306,10 +343,13 @@ func CreateCoachCompetition(w http.ResponseWriter, r *http.Request) {
 		req.StudentIDs = []uint{coachID}
 	}
 
+	clubID := getCoachClubID(coachID)
+
 	var created []entity.Competition
 	for _, sid := range req.StudentIDs {
 		comp := entity.Competition{
 			UserID:   sid,
+			ClubID:   clubID,
 			Name:     req.Name,
 			Date:     req.Date,
 			Link:     req.Link,
