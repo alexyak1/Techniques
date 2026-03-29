@@ -16,6 +16,7 @@ type User struct {
 	Bio          string    `json:"bio,omitempty"`
 	PhotoURL     string    `json:"photo_url,omitempty" gorm:"size:512"`
 	BirthDate    string    `json:"birth_date,omitempty" gorm:"size:10"`
+	Gender       string    `json:"gender,omitempty" gorm:"size:10"`
 	Role          string    `json:"role" gorm:"not null;default:'student';size:20"`
 	EmailVerified bool     `json:"email_verified" gorm:"default:false"`
 	ClubID       *uint     `json:"club_id,omitempty"`
@@ -46,8 +47,9 @@ type Competition struct {
 	Date     string `json:"date" gorm:"not null;size:10"`
 	Link     string `json:"link,omitempty" gorm:"size:512"`
 	Result   string `json:"result" gorm:"not null;size:20"`
-	Category string `json:"category,omitempty" gorm:"size:20"`
-	Deleted  bool   `json:"deleted" gorm:"default:false"`
+	Category    string `json:"category,omitempty" gorm:"size:20"`
+	WeightClass string `json:"weight_class,omitempty" gorm:"size:20"`
+	Deleted     bool   `json:"deleted" gorm:"default:false"`
 }
 
 type QuizResult struct {

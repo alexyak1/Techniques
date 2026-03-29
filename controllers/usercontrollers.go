@@ -123,7 +123,7 @@ func GetMyClubCompetitionsFull(w http.ResponseWriter, r *http.Request) {
 	var comps []CompetitionWithUser
 	if usr.ClubID != nil {
 		database.Connector.Raw(`
-			SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+			SELECT c.*, COALESCE(u.name, '') as user_name, COALESCE(u.gender, '') as user_gender FROM competitions c
 			LEFT JOIN users u ON c.user_id = u.id
 			WHERE c.club_id = ? AND (c.deleted = 0 OR c.deleted IS NULL)
 			ORDER BY c.date DESC, c.name
@@ -233,6 +233,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		Name      string `json:"name"`
 		PhotoURL  string `json:"photo_url"`
 		BirthDate string `json:"birth_date"`
+		Gender    string `json:"gender"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -246,6 +247,9 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.PhotoURL != "" {
 		updates["photo_url"] = req.PhotoURL
+	}
+	if req.Gender != "" {
+		updates["gender"] = req.Gender
 	}
 	if req.BirthDate != "" {
 		updates["birth_date"] = req.BirthDate
@@ -464,7 +468,8 @@ func GetUserQuizResults(w http.ResponseWriter, r *http.Request) {
 
 type CompetitionWithUser struct {
 	entity.Competition
-	UserName string `json:"user_name"`
+	UserName   string `json:"user_name"`
+	UserGender string `json:"user_gender"`
 }
 
 func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
@@ -475,7 +480,7 @@ func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
 
 	if role == "admin" {
 		database.Connector.Raw(`
-			SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+			SELECT c.*, COALESCE(u.name, '') as user_name, COALESCE(u.gender, '') as user_gender FROM competitions c
 			LEFT JOIN users u ON c.user_id = u.id
 			ORDER BY c.date DESC, c.name
 		`).Scan(&comps)
@@ -483,7 +488,7 @@ func GetClubCompetitions(w http.ResponseWriter, r *http.Request) {
 		clubID := getCoachClubID(userID)
 		if clubID != nil {
 			database.Connector.Raw(`
-				SELECT c.*, COALESCE(u.name, '') as user_name FROM competitions c
+				SELECT c.*, COALESCE(u.name, '') as user_name, COALESCE(u.gender, '') as user_gender FROM competitions c
 				LEFT JOIN users u ON c.user_id = u.id
 				WHERE c.club_id = ? AND (c.deleted = 0 OR c.deleted IS NULL)
 				ORDER BY c.date DESC, c.name
@@ -746,6 +751,18 @@ func RestoreCompetitionEvent(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "restored"})
+}
+
+func UpdateCompetitionWeightClass(w http.ResponseWriter, r *http.Request) {
+	compID, _ := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	var req struct {
+		WeightClass string `json:"weight_class"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+	defer r.Body.Close()
+	database.Connector.Model(&entity.Competition{}).Where("id = ?", compID).Update("weight_class", req.WeightClass)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "updated"})
 }
 
 func UpdateCompetitionResult(w http.ResponseWriter, r *http.Request) {
@@ -1109,6 +1126,7 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 		PhotoURL  string `json:"photo_url"`
 		Email     string `json:"email"`
 		BirthDate string `json:"birth_date"`
+		Gender    string `json:"gender"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -1134,6 +1152,9 @@ func CoachUpdateStudentProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.BirthDate != "" {
 		updates["birth_date"] = req.BirthDate
+	}
+	if req.Gender != "" {
+		updates["gender"] = req.Gender
 	}
 
 	if len(updates) > 0 {
