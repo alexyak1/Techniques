@@ -1616,7 +1616,10 @@ func UpdateUserClub(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	database.Connector.Model(&entity.User{}).Where("id = ?", targetID).Update("club_id", req.ClubID)
+	database.Connector.Model(&entity.User{}).Where("id = ?", targetID).Updates(map[string]interface{}{
+		"club_id":     req.ClubID,
+		"club_status": "",
+	})
 
 	var user entity.User
 	database.Connector.Preload("Club").First(&user, targetID)
