@@ -1600,6 +1600,31 @@ func DeleteClub(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	targetID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid user ID"}`, http.StatusBadRequest)
+		return
+	}
+
+	// Don't allow deleting yourself
+	adminID := middleware.GetUserIDFromContext(r)
+	if uint(targetID) == adminID {
+		http.Error(w, `{"error":"Cannot delete your own account"}`, http.StatusBadRequest)
+		return
+	}
+
+	// Delete related data
+	database.Connector.Where("user_id = ?", targetID).Delete(&entity.Belt{})
+	database.Connector.Where("user_id = ?", targetID).Delete(&entity.Competition{})
+	database.Connector.Where("user_id = ?", targetID).Delete(&entity.QuizResult{})
+	database.Connector.Where("user_id = ?", targetID).Delete(&entity.License{})
+	database.Connector.Where("coach_id = ? OR student_id = ?", targetID, targetID).Delete(&entity.CoachStudent{})
+	database.Connector.Where("id = ?", targetID).Delete(&entity.User{})
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func UpdateUserClub(w http.ResponseWriter, r *http.Request) {
 	targetID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {

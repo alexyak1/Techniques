@@ -250,6 +250,7 @@ func handleRequests() {
 	adminRoutes.HandleFunc("/users", controllers.GetAllUsers).Methods("GET")
 	adminRoutes.HandleFunc("/users/{id}/role", controllers.UpdateUserRole).Methods("PUT")
 	adminRoutes.HandleFunc("/users/{id}/club", controllers.UpdateUserClub).Methods("PUT")
+	adminRoutes.HandleFunc("/users/{id}", controllers.DeleteUser).Methods("DELETE")
 	adminRoutes.HandleFunc("/coach-students", controllers.AssignStudentToCoach).Methods("POST")
 	adminRoutes.HandleFunc("/coach-students/{id}", controllers.RemoveStudentFromCoach).Methods("DELETE")
 	adminRoutes.HandleFunc("/clubs", controllers.GetAllClubs).Methods("GET")
