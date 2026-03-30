@@ -22,6 +22,7 @@ type User struct {
 	ClubID       *uint     `json:"club_id,omitempty"`
 	ClubStatus   string    `json:"club_status,omitempty" gorm:"size:20"`
 	Club         *Club     `json:"club,omitempty" gorm:"foreignkey:ClubID"`
+	LastLoginAt  *time.Time `json:"last_login_at,omitempty"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 	Belts        []Belt         `json:"belts,omitempty" gorm:"foreignkey:UserID"`

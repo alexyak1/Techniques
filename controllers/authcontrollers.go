@@ -178,6 +178,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Record last login
+	now := time.Now()
+	database.Connector.Model(&user).Update("last_login_at", now)
+	user.LastLoginAt = &now
+
 	token, err := middleware.GenerateToken(user.ID, user.Role)
 	if err != nil {
 		http.Error(w, `{"error":"Failed to generate token"}`, http.StatusInternalServerError)

@@ -1219,6 +1219,67 @@ func InviteStudent(w http.ResponseWriter, r *http.Request) {
 
 // Admin endpoints
 
+func AdminDashboard(w http.ResponseWriter, r *http.Request) {
+	type UserActivity struct {
+		ID          uint       `json:"id"`
+		Name        string     `json:"name"`
+		Email       string     `json:"email"`
+		Role        string     `json:"role"`
+		ClubName    string     `json:"club_name"`
+		LastLoginAt *time.Time `json:"last_login_at"`
+		CreatedAt   time.Time  `json:"created_at"`
+	}
+
+	var users []UserActivity
+	database.Connector.Raw(`
+		SELECT u.id, u.name, COALESCE(u.email, '') as email, u.role,
+			COALESCE(c.name, '') as club_name, u.last_login_at, u.created_at
+		FROM users u
+		LEFT JOIN clubs c ON u.club_id = c.id
+		ORDER BY u.last_login_at DESC
+	`).Scan(&users)
+
+	var totalStudents, totalCoaches, totalAdmins, activeThisWeek, activeThisMonth, neverLoggedIn int
+	now := time.Now()
+	weekAgo := now.AddDate(0, 0, -7)
+	monthAgo := now.AddDate(0, -1, 0)
+
+	for _, u := range users {
+		switch u.Role {
+		case "student":
+			totalStudents++
+		case "coach":
+			totalCoaches++
+		case "admin":
+			totalAdmins++
+		}
+		if u.LastLoginAt == nil {
+			neverLoggedIn++
+		} else {
+			if u.LastLoginAt.After(weekAgo) {
+				activeThisWeek++
+			}
+			if u.LastLoginAt.After(monthAgo) {
+				activeThisMonth++
+			}
+		}
+	}
+
+	result := map[string]interface{}{
+		"total_users":      len(users),
+		"total_students":   totalStudents,
+		"total_coaches":    totalCoaches,
+		"total_admins":     totalAdmins,
+		"active_this_week": activeThisWeek,
+		"active_this_month": activeThisMonth,
+		"never_logged_in":  neverLoggedIn,
+		"users":            users,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(result)
+}
+
 func AdminCreateCoach(w http.ResponseWriter, r *http.Request) {
 	adminID := middleware.GetUserIDFromContext(r)
 

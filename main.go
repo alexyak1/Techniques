@@ -246,6 +246,7 @@ func handleRequests() {
 	adminRoutes := myRouter.PathPrefix("/admin").Subrouter()
 	adminRoutes.Use(middleware.AuthMiddleware)
 	adminRoutes.Use(middleware.RequireRole("admin"))
+	adminRoutes.HandleFunc("/dashboard", controllers.AdminDashboard).Methods("GET")
 	adminRoutes.HandleFunc("/create-coach", controllers.AdminCreateCoach).Methods("POST")
 	adminRoutes.HandleFunc("/users", controllers.GetAllUsers).Methods("GET")
 	adminRoutes.HandleFunc("/users/{id}/role", controllers.UpdateUserRole).Methods("PUT")
