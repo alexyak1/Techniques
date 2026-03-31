@@ -1886,6 +1886,157 @@ func MergeUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(merged)
 }
 
+func AdminInviteToClub(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		UserID uint `json:"user_id"`
+		ClubID uint `json:"club_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if req.UserID == 0 || req.ClubID == 0 {
+		http.Error(w, `{"error":"user_id and club_id are required"}`, http.StatusBadRequest)
+		return
+	}
+
+	var user entity.User
+	if err := database.Connector.First(&user, req.UserID).Error; err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
+
+	var club entity.Club
+	if err := database.Connector.First(&club, req.ClubID).Error; err != nil {
+		http.Error(w, `{"error":"Club not found"}`, http.StatusNotFound)
+		return
+	}
+
+	if user.Email == "" {
+		http.Error(w, `{"error":"User has no email address"}`, http.StatusBadRequest)
+		return
+	}
+
+	adminID := middleware.GetUserIDFromContext(r)
+
+	// Store clubID:adminID in Data field
+	token := email.GenerateToken()
+	vt := entity.VerificationToken{
+		Email:     user.Email,
+		Token:     token,
+		Purpose:   "club-invite",
+		Data:      fmt.Sprintf("%d:%d", req.ClubID, adminID),
+		ExpiresAt: time.Now().Add(7 * 24 * time.Hour),
+	}
+	database.Connector.Create(&vt)
+
+	frontendURL := os.Getenv("FRONTEND_URL")
+	acceptLink := fmt.Sprintf("%s/accept-club-invite?token=%s&action=accept", frontendURL, token)
+	denyLink := fmt.Sprintf("%s/accept-club-invite?token=%s&action=deny", frontendURL, token)
+	email.SendClubInvite(user.Email, club.Name, acceptLink, denyLink)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"status":    "Invite sent",
+		"club_name": club.Name,
+		"user_name": user.Name,
+	})
+}
+
+func AcceptClubInvite(w http.ResponseWriter, r *http.Request) {
+	tokenStr := r.URL.Query().Get("token")
+	action := r.URL.Query().Get("action")
+	if tokenStr == "" {
+		http.Error(w, `{"error":"Token is required"}`, http.StatusBadRequest)
+		return
+	}
+	if action == "" {
+		action = "accept"
+	}
+
+	var vt entity.VerificationToken
+	if err := database.Connector.Where("token = ? AND purpose = ? AND used = ?", tokenStr, "club-invite", false).First(&vt).Error; err != nil {
+		http.Error(w, `{"error":"Invalid or expired invite"}`, http.StatusBadRequest)
+		return
+	}
+
+	if time.Now().After(vt.ExpiresAt) {
+		http.Error(w, `{"error":"Invite has expired"}`, http.StatusBadRequest)
+		return
+	}
+
+	// Parse clubID:adminID from Data
+	parts := strings.SplitN(vt.Data, ":", 2)
+	if len(parts) < 1 {
+		http.Error(w, `{"error":"Invalid invite data"}`, http.StatusInternalServerError)
+		return
+	}
+
+	clubID, err := strconv.ParseUint(parts[0], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid invite data"}`, http.StatusInternalServerError)
+		return
+	}
+
+	var adminID uint64
+	if len(parts) == 2 {
+		adminID, _ = strconv.ParseUint(parts[1], 10, 64)
+	}
+
+	// Find user and club
+	var user entity.User
+	if err := database.Connector.Where("email = ?", vt.Email).First(&user).Error; err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
+
+	var club entity.Club
+	database.Connector.First(&club, clubID)
+
+	// Mark token as used
+	database.Connector.Model(&vt).Update("used", true)
+
+	// Find admin for notification
+	var admin entity.User
+	if adminID > 0 {
+		database.Connector.First(&admin, adminID)
+	}
+
+	if action == "deny" {
+		// Notify admin about denial
+		if admin.Email != "" {
+			email.SendNotification(admin.Email,
+				fmt.Sprintf("JudoQuiz - %s declined club invitation", user.Name),
+				fmt.Sprintf("%s (%s) has declined the invitation to join %s.", user.Name, user.Email, club.Name),
+			)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"status": "Invitation declined"})
+		return
+	}
+
+	// Accept: assign user to club
+	cid := uint(clubID)
+	database.Connector.Model(&entity.User{}).Where("id = ?", user.ID).Updates(map[string]interface{}{
+		"club_id":     cid,
+		"club_status": "approved",
+	})
+
+	// Notify admin about acceptance
+	if admin.Email != "" {
+		email.SendNotification(admin.Email,
+			fmt.Sprintf("JudoQuiz - %s accepted club invitation", user.Name),
+			fmt.Sprintf("%s (%s) has accepted the invitation and joined %s.", user.Name, user.Email, club.Name),
+		)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "Club joined successfully"})
+}
+
 func UpdateUserClub(w http.ResponseWriter, r *http.Request) {
 	targetID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {

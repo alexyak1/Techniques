@@ -182,6 +182,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/auth/forgot-password", controllers.ForgotPassword).Methods("POST")
 	myRouter.HandleFunc("/auth/reset-password", controllers.ResetPassword).Methods("POST")
 	myRouter.HandleFunc("/auth/accept-invite", controllers.AcceptInvite).Methods("POST")
+	myRouter.HandleFunc("/auth/accept-club-invite", controllers.AcceptClubInvite).Methods("GET")
 
 	// Protected routes - any authenticated user
 	protected := myRouter.PathPrefix("").Subrouter()
@@ -234,8 +235,6 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/add-student", controllers.CoachAddStudent).Methods("POST")
 	coachRoutes.HandleFunc("/create-student", controllers.CoachCreateStudent).Methods("POST")
 	coachRoutes.HandleFunc("/remove-student/{id}", controllers.CoachRemoveStudent).Methods("DELETE")
-	coachRoutes.HandleFunc("/merge-preview", controllers.MergePreview).Methods("POST")
-	coachRoutes.HandleFunc("/merge-users", controllers.MergeUsers).Methods("POST")
 	coachRoutes.HandleFunc("/club-coaches", controllers.GetClubCoaches).Methods("GET")
 	coachRoutes.HandleFunc("/club-coaches/{id}", controllers.GetCoachProfile).Methods("GET")
 	coachRoutes.HandleFunc("/clubs", controllers.GetAllClubsPublic).Methods("GET")
@@ -257,6 +256,9 @@ func handleRequests() {
 	adminRoutes.HandleFunc("/users/{id}", controllers.DeleteUser).Methods("DELETE")
 	adminRoutes.HandleFunc("/coach-students", controllers.AssignStudentToCoach).Methods("POST")
 	adminRoutes.HandleFunc("/coach-students/{id}", controllers.RemoveStudentFromCoach).Methods("DELETE")
+	adminRoutes.HandleFunc("/invite-to-club", controllers.AdminInviteToClub).Methods("POST")
+	adminRoutes.HandleFunc("/merge-preview", controllers.MergePreview).Methods("POST")
+	adminRoutes.HandleFunc("/merge-users", controllers.MergeUsers).Methods("POST")
 	adminRoutes.HandleFunc("/clubs", controllers.GetAllClubs).Methods("GET")
 	adminRoutes.HandleFunc("/clubs", controllers.CreateClub).Methods("POST")
 	adminRoutes.HandleFunc("/clubs/{id}", controllers.DeleteClub).Methods("DELETE")
