@@ -164,6 +164,68 @@ func GetMyClubCompetitions(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(comps)
 }
 
+func GetClubMemberProfile(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	memberID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid user ID"}`, http.StatusBadRequest)
+		return
+	}
+
+	var caller entity.User
+	database.Connector.First(&caller, userID)
+
+	var member entity.User
+	if err := database.Connector.
+		Preload("Belts").Preload("Competitions").Preload("Club").
+		First(&member, memberID).Error; err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
+
+	// Must be in the same club
+	if caller.ClubID == nil || member.ClubID == nil || *caller.ClubID != *member.ClubID {
+		http.Error(w, `{"error":"Not in the same club"}`, http.StatusForbidden)
+		return
+	}
+
+	// Return public profile only (no email, no password hash, no quiz results)
+	type PublicProfile struct {
+		ID           uint                 `json:"id"`
+		Name         string               `json:"name"`
+		PhotoURL     string               `json:"photo_url,omitempty"`
+		Bio          string               `json:"bio,omitempty"`
+		BirthDate    string               `json:"birth_date,omitempty"`
+		Gender       string               `json:"gender,omitempty"`
+		Role         string               `json:"role"`
+		Club         *entity.Club         `json:"club,omitempty"`
+		Belts        []entity.Belt        `json:"belts"`
+		Competitions []entity.Competition `json:"competitions"`
+	}
+
+	profile := PublicProfile{
+		ID:           member.ID,
+		Name:         member.Name,
+		PhotoURL:     member.PhotoURL,
+		Bio:          member.Bio,
+		BirthDate:    member.BirthDate,
+		Gender:       member.Gender,
+		Role:         member.Role,
+		Club:         member.Club,
+		Belts:        member.Belts,
+		Competitions: member.Competitions,
+	}
+	if profile.Belts == nil {
+		profile.Belts = []entity.Belt{}
+	}
+	if profile.Competitions == nil {
+		profile.Competitions = []entity.Competition{}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(profile)
+}
+
 func UserLeaveClub(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserIDFromContext(r)
 	database.Connector.Model(&entity.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
@@ -1210,8 +1272,19 @@ func InviteStudent(w http.ResponseWriter, r *http.Request) {
 	}
 	database.Connector.Create(&vt)
 
+	// Get coach name for the invite email
+	coachID := middleware.GetUserIDFromContext(r)
+	var coach entity.User
+	database.Connector.First(&coach, coachID)
+	clubName := ""
+	if coach.ClubID != nil {
+		var club entity.Club
+		database.Connector.First(&club, *coach.ClubID)
+		clubName = club.Name
+	}
+
 	link := fmt.Sprintf("%s/accept-invite?token=%s", os.Getenv("FRONTEND_URL"), token)
-	email.SendVerificationLink(req.Email, link, "register")
+	email.SendAccountInvite(req.Email, coach.Name, clubName, link)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "Invite sent"})
@@ -1352,6 +1425,42 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"Failed to update role"}`, http.StatusInternalServerError)
 		return
 	}
+
+	var user entity.User
+	database.Connector.First(&user, targetID)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
+
+func UpdateUserEmail(w http.ResponseWriter, r *http.Request) {
+	targetID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid user ID"}`, http.StatusBadRequest)
+		return
+	}
+
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	req.Email = strings.TrimSpace(strings.ToLower(req.Email))
+
+	// Check email not taken by another user
+	if req.Email != "" {
+		var existing entity.User
+		if database.Connector.Where("email = ? AND id != ?", req.Email, targetID).First(&existing).Error == nil {
+			http.Error(w, `{"error":"Email already in use by another account"}`, http.StatusConflict)
+			return
+		}
+	}
+
+	database.Connector.Model(&entity.User{}).Where("id = ?", targetID).Update("email", req.Email)
 
 	var user entity.User
 	database.Connector.First(&user, targetID)

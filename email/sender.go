@@ -124,6 +124,23 @@ func SendClubInvite(toEmail, clubName, acceptLink, denyLink string) error {
 	return sendHTML(toEmail, subject, html)
 }
 
+func SendAccountInvite(toEmail, coachName, clubName, link string) error {
+	title := "You're Invited to JudoQuiz"
+	fromLine := fmt.Sprintf("<strong style=\"color:#fff;\">%s</strong>", coachName)
+	if clubName != "" {
+		fromLine += fmt.Sprintf(" from <strong style=\"color:#fff;\">%s</strong>", clubName)
+	}
+	subject := "You're invited to join JudoQuiz"
+	html := emailTemplate(title, ""+
+		text(fmt.Sprintf("%s has invited you to join JudoQuiz.", fromLine))+
+		text("Click below to set up your account and get started.")+
+		button("Accept Invitation", link, "")+
+		smallText("This invitation expires in 7 days.")+
+		smallText("If you didn't expect this, you can safely ignore this email."),
+	)
+	return sendHTML(toEmail, subject, html)
+}
+
 func SendNotification(toEmail, subject, body string) error {
 	html := emailTemplate("JudoQuiz Notification", text(body))
 	return sendHTML(toEmail, subject, html)
