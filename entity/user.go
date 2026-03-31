@@ -80,6 +80,18 @@ type License struct {
 	ExpiresAt string `json:"expires_at,omitempty" gorm:"size:10"`
 }
 
+type MergeLog struct {
+	ID         uint      `json:"id" gorm:"primary_key;auto_increment"`
+	AdminID    uint      `json:"admin_id" gorm:"not null"`
+	AdminName  string    `json:"admin_name" gorm:"not null;size:255"`
+	TargetID   uint      `json:"target_id" gorm:"not null"`
+	TargetName string    `json:"target_name" gorm:"not null;size:255"`
+	SourceID   uint      `json:"source_id" gorm:"not null"`
+	SourceName string    `json:"source_name" gorm:"not null;size:255"`
+	Details    string    `json:"details" gorm:"type:text"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
 type CoachStudent struct {
 	ID        uint `json:"id" gorm:"primary_key;auto_increment"`
 	CoachID   uint `json:"coach_id" gorm:"not null;unique_index:idx_coach_student"`

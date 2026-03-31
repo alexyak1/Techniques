@@ -121,6 +121,7 @@ func initDB() {
 		&entity.CoachStudent{},
 		&entity.License{},
 		&entity.VerificationToken{},
+		&entity.MergeLog{},
 	)
 
 	// Seed default admin if none exists
@@ -233,6 +234,8 @@ func handleRequests() {
 	coachRoutes.HandleFunc("/add-student", controllers.CoachAddStudent).Methods("POST")
 	coachRoutes.HandleFunc("/create-student", controllers.CoachCreateStudent).Methods("POST")
 	coachRoutes.HandleFunc("/remove-student/{id}", controllers.CoachRemoveStudent).Methods("DELETE")
+	coachRoutes.HandleFunc("/merge-preview", controllers.MergePreview).Methods("POST")
+	coachRoutes.HandleFunc("/merge-users", controllers.MergeUsers).Methods("POST")
 	coachRoutes.HandleFunc("/club-coaches", controllers.GetClubCoaches).Methods("GET")
 	coachRoutes.HandleFunc("/club-coaches/{id}", controllers.GetCoachProfile).Methods("GET")
 	coachRoutes.HandleFunc("/clubs", controllers.GetAllClubsPublic).Methods("GET")

@@ -1686,6 +1686,206 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func MergePreview(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		TargetID uint `json:"target_id"`
+		SourceID uint `json:"source_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if req.TargetID == 0 || req.SourceID == 0 {
+		http.Error(w, `{"error":"Both target_id and source_id are required"}`, http.StatusBadRequest)
+		return
+	}
+
+	var target, source entity.User
+	if err := database.Connector.Preload("Belts").Preload("Competitions").Preload("Licenses").Preload("Club").
+		First(&target, req.TargetID).Error; err != nil {
+		http.Error(w, `{"error":"Target user not found"}`, http.StatusNotFound)
+		return
+	}
+	if err := database.Connector.Preload("Belts").Preload("Competitions").Preload("Licenses").Preload("Club").
+		First(&source, req.SourceID).Error; err != nil {
+		http.Error(w, `{"error":"Source user not found"}`, http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"target": target,
+		"source": source,
+	})
+}
+
+func MergeUsers(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		TargetID         uint   `json:"target_id"`
+		SourceID         uint   `json:"source_id"`
+		KeepBeltIDs      []uint `json:"keep_belt_ids"`
+		KeepCompIDs      []uint `json:"keep_competition_ids"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if req.TargetID == 0 || req.SourceID == 0 {
+		http.Error(w, `{"error":"Both target_id and source_id are required"}`, http.StatusBadRequest)
+		return
+	}
+	if req.TargetID == req.SourceID {
+		http.Error(w, `{"error":"Cannot merge a user with themselves"}`, http.StatusBadRequest)
+		return
+	}
+
+	callerID := middleware.GetUserIDFromContext(r)
+	if req.TargetID == callerID || req.SourceID == callerID {
+		http.Error(w, `{"error":"Cannot merge your own account"}`, http.StatusBadRequest)
+		return
+	}
+
+	var target, source entity.User
+	if err := database.Connector.Preload("Belts").Preload("Competitions").Preload("Licenses").Preload("QuizResults").
+		First(&target, req.TargetID).Error; err != nil {
+		http.Error(w, `{"error":"Target user not found"}`, http.StatusNotFound)
+		return
+	}
+	if err := database.Connector.Preload("Belts").Preload("Competitions").Preload("Licenses").Preload("QuizResults").
+		First(&source, req.SourceID).Error; err != nil {
+		http.Error(w, `{"error":"Source user not found"}`, http.StatusNotFound)
+		return
+	}
+
+	// Profile: target name + photo always win; fill blank fields from source
+	updates := map[string]interface{}{}
+	if target.Bio == "" && source.Bio != "" {
+		updates["bio"] = source.Bio
+	}
+	if target.BirthDate == "" && source.BirthDate != "" {
+		updates["birth_date"] = source.BirthDate
+	}
+	if target.Gender == "" && source.Gender != "" {
+		updates["gender"] = source.Gender
+	}
+	if target.ClubID == nil && source.ClubID != nil {
+		updates["club_id"] = *source.ClubID
+		updates["club_status"] = source.ClubStatus
+	}
+	if len(updates) > 0 {
+		database.Connector.Model(&entity.User{}).Where("id = ?", target.ID).Updates(updates)
+	}
+
+	// Build set of chosen belt/competition IDs for quick lookup
+	keepBelts := map[uint]bool{}
+	for _, id := range req.KeepBeltIDs {
+		keepBelts[id] = true
+	}
+	keepComps := map[uint]bool{}
+	for _, id := range req.KeepCompIDs {
+		keepComps[id] = true
+	}
+
+	// Move chosen source belts to target, delete the rest
+	for _, b := range source.Belts {
+		if keepBelts[b.ID] {
+			database.Connector.Model(&entity.Belt{}).Where("id = ?", b.ID).Update("user_id", target.ID)
+		}
+	}
+	// Delete unchosen target belts
+	for _, b := range target.Belts {
+		if !keepBelts[b.ID] {
+			database.Connector.Where("id = ?", b.ID).Delete(&entity.Belt{})
+		}
+	}
+
+	// Move chosen source competitions to target, delete the rest
+	for _, c := range source.Competitions {
+		if keepComps[c.ID] {
+			database.Connector.Model(&entity.Competition{}).Where("id = ?", c.ID).Update("user_id", target.ID)
+		}
+	}
+	// Delete unchosen target competitions
+	for _, c := range target.Competitions {
+		if !keepComps[c.ID] {
+			database.Connector.Where("id = ?", c.ID).Delete(&entity.Competition{})
+		}
+	}
+
+	// Licenses: keep all unique (by name + issued_at)
+	existingLics := map[string]bool{}
+	for _, l := range target.Licenses {
+		existingLics[l.Name+"|"+l.IssuedAt] = true
+	}
+	for _, l := range source.Licenses {
+		if !existingLics[l.Name+"|"+l.IssuedAt] {
+			database.Connector.Model(&entity.License{}).Where("id = ?", l.ID).Update("user_id", target.ID)
+		}
+	}
+
+	// Transfer all quiz results
+	database.Connector.Model(&entity.QuizResult{}).Where("user_id = ?", source.ID).Update("user_id", target.ID)
+
+	// Transfer coach-student relationships (avoid duplicates)
+	var sourceCSRecords []entity.CoachStudent
+	database.Connector.Where("student_id = ? OR coach_id = ?", source.ID, source.ID).Find(&sourceCSRecords)
+	for _, cs := range sourceCSRecords {
+		newCoachID := cs.CoachID
+		newStudentID := cs.StudentID
+		if cs.StudentID == source.ID {
+			newStudentID = target.ID
+		}
+		if cs.CoachID == source.ID {
+			newCoachID = target.ID
+		}
+		var count int
+		database.Connector.Model(&entity.CoachStudent{}).
+			Where("coach_id = ? AND student_id = ?", newCoachID, newStudentID).Count(&count)
+		if count == 0 {
+			database.Connector.Model(&entity.CoachStudent{}).Where("id = ?", cs.ID).
+				Updates(map[string]interface{}{"coach_id": newCoachID, "student_id": newStudentID})
+		}
+	}
+
+	// Write audit log
+	var caller entity.User
+	database.Connector.First(&caller, callerID)
+	details := fmt.Sprintf(
+		"Kept belt IDs: %v, kept competition IDs: %v. Source email: %s",
+		req.KeepBeltIDs, req.KeepCompIDs, source.Email,
+	)
+	database.Connector.Create(&entity.MergeLog{
+		AdminID:    callerID,
+		AdminName:  caller.Name,
+		TargetID:   target.ID,
+		TargetName: target.Name,
+		SourceID:   source.ID,
+		SourceName: source.Name,
+		Details:    details,
+	})
+
+	// Delete source user and any remaining orphan data
+	database.Connector.Where("user_id = ?", source.ID).Delete(&entity.Belt{})
+	database.Connector.Where("user_id = ?", source.ID).Delete(&entity.Competition{})
+	database.Connector.Where("user_id = ?", source.ID).Delete(&entity.License{})
+	database.Connector.Where("user_id = ?", source.ID).Delete(&entity.QuizResult{})
+	database.Connector.Where("coach_id = ? OR student_id = ?", source.ID, source.ID).Delete(&entity.CoachStudent{})
+	database.Connector.Where("id = ?", source.ID).Delete(&entity.User{})
+
+	// Return the merged user
+	var merged entity.User
+	database.Connector.Preload("Belts").Preload("Competitions").Preload("Licenses").Preload("QuizResults").Preload("Club").
+		First(&merged, target.ID)
+	merged.HasPassword = merged.PasswordHash != ""
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(merged)
+}
+
 func UpdateUserClub(w http.ResponseWriter, r *http.Request) {
 	targetID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
