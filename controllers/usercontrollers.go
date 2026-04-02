@@ -415,6 +415,59 @@ func AddBelt(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(belt)
 }
 
+func UpdateBelt(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserIDFromContext(r)
+	beltID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, `{"error":"Invalid belt ID"}`, http.StatusBadRequest)
+		return
+	}
+
+	var existing entity.Belt
+	if err := database.Connector.Where("id = ? AND user_id = ?", beltID, userID).First(&existing).Error; err != nil {
+		http.Error(w, `{"error":"Belt not found"}`, http.StatusNotFound)
+		return
+	}
+
+	var req struct {
+		Color          string `json:"color"`
+		GraduationDate string `json:"graduation_date"`
+		ExaminerID     *uint  `json:"examiner_id"`
+		ExaminerName   string `json:"examiner_name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	updates := map[string]interface{}{}
+	if req.Color != "" {
+		updates["color"] = req.Color
+	}
+	if req.GraduationDate != "" {
+		updates["graduation_date"] = req.GraduationDate
+	}
+	if req.ExaminerName != "" {
+		updates["examiner_name"] = req.ExaminerName
+		updates["examiner_id"] = nil
+	} else if req.ExaminerID != nil {
+		updates["examiner_id"] = *req.ExaminerID
+		var examiner entity.User
+		if database.Connector.First(&examiner, *req.ExaminerID).Error == nil {
+			updates["examiner_name"] = examiner.Name
+		}
+	}
+
+	database.Connector.Model(&entity.Belt{}).Where("id = ?", beltID).Updates(updates)
+
+	var belt entity.Belt
+	database.Connector.First(&belt, beltID)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(belt)
+}
+
 func DeleteBelt(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserIDFromContext(r)
 	beltID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
@@ -1115,6 +1168,55 @@ func CoachAddBelt(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(belt)
+}
+
+func CoachUpdateBelt(w http.ResponseWriter, r *http.Request) {
+	studentID, _ := strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	beltID, _ := strconv.ParseUint(mux.Vars(r)["beltId"], 10, 64)
+
+	var existing entity.Belt
+	if err := database.Connector.Where("id = ? AND user_id = ?", beltID, studentID).First(&existing).Error; err != nil {
+		http.Error(w, `{"error":"Belt not found"}`, http.StatusNotFound)
+		return
+	}
+
+	var req struct {
+		Color          string `json:"color"`
+		GraduationDate string `json:"graduation_date"`
+		ExaminerID     *uint  `json:"examiner_id"`
+		ExaminerName   string `json:"examiner_name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	updates := map[string]interface{}{}
+	if req.Color != "" {
+		updates["color"] = req.Color
+	}
+	if req.GraduationDate != "" {
+		updates["graduation_date"] = req.GraduationDate
+	}
+	if req.ExaminerName != "" {
+		updates["examiner_name"] = req.ExaminerName
+		updates["examiner_id"] = nil
+	} else if req.ExaminerID != nil {
+		updates["examiner_id"] = *req.ExaminerID
+		var examiner entity.User
+		if database.Connector.First(&examiner, *req.ExaminerID).Error == nil {
+			updates["examiner_name"] = examiner.Name
+		}
+	}
+
+	database.Connector.Model(&entity.Belt{}).Where("id = ?", beltID).Updates(updates)
+
+	var belt entity.Belt
+	database.Connector.First(&belt, beltID)
+
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(belt)
 }
 
