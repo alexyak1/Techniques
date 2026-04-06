@@ -499,9 +499,12 @@ func AddCompetition(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if comp.Name == "" || comp.Date == "" || comp.Result == "" {
-		http.Error(w, `{"error":"Name, date, and result are required"}`, http.StatusBadRequest)
+	if comp.Name == "" || comp.Date == "" {
+		http.Error(w, `{"error":"Name and date are required"}`, http.StatusBadRequest)
 		return
+	}
+	if comp.Result == "" {
+		comp.Result = "participated"
 	}
 
 	comp.UserID = userID
@@ -1246,9 +1249,12 @@ func CoachAddCompetition(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if comp.Name == "" || comp.Date == "" || comp.Result == "" {
-		http.Error(w, `{"error":"Name, date, and result are required"}`, http.StatusBadRequest)
+	if comp.Name == "" || comp.Date == "" {
+		http.Error(w, `{"error":"Name and date are required"}`, http.StatusBadRequest)
 		return
+	}
+	if comp.Result == "" {
+		comp.Result = "participated"
 	}
 
 	comp.UserID = uint(studentID)
