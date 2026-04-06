@@ -124,6 +124,9 @@ func initDB() {
 		&entity.MergeLog{},
 	)
 
+	// Widen competitions.date column for multi-day events
+	database.Connector.Exec("ALTER TABLE competitions MODIFY date VARCHAR(50) NOT NULL")
+
 	// Seed default admin if none exists
 	var count int
 	database.Connector.Model(&entity.User{}).Where("role = ?", "admin").Count(&count)

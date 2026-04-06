@@ -45,7 +45,7 @@ type Competition struct {
 	UserID   uint   `json:"user_id" gorm:"not null"`
 	ClubID   *uint  `json:"club_id,omitempty"`
 	Name     string `json:"name" gorm:"not null;size:255"`
-	Date     string `json:"date" gorm:"not null;size:10"`
+	Date     string `json:"date" gorm:"not null;size:50"`
 	Link     string `json:"link,omitempty" gorm:"size:512"`
 	Result   string `json:"result" gorm:"not null;size:20"`
 	Category    string `json:"category,omitempty" gorm:"size:20"`
