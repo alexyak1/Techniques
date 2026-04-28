@@ -35,11 +35,15 @@ type Claims struct {
 }
 
 func GenerateToken(userID uint, role string) (string, error) {
+	return GenerateTokenWithDuration(userID, role, 24*time.Hour)
+}
+
+func GenerateTokenWithDuration(userID uint, role string, duration time.Duration) (string, error) {
 	claims := Claims{
 		UserID: userID,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}

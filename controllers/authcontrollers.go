@@ -153,6 +153,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
+		Remember bool   `json:"remember"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error":"Invalid JSON"}`, http.StatusBadRequest)
@@ -183,7 +184,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	database.Connector.Model(&user).Update("last_login_at", now)
 	user.LastLoginAt = &now
 
-	token, err := middleware.GenerateToken(user.ID, user.Role)
+	duration := 24 * time.Hour
+	if req.Remember {
+		duration = 30 * 24 * time.Hour
+	}
+	token, err := middleware.GenerateTokenWithDuration(user.ID, user.Role, duration)
 	if err != nil {
 		http.Error(w, `{"error":"Failed to generate token"}`, http.StatusInternalServerError)
 		return
